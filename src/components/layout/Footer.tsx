@@ -98,7 +98,7 @@ export default function Footer() {
             <span>© {new Date().getFullYear()} Sabbir Rayhan Mahee</span>
             <span style={{ color: "#1e293b" }}>·</span>
             <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-              Built with <Heart size={11} color="#f87171" fill="#f87171" /> in Bangladesh
+              All rights reserved
             </span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
