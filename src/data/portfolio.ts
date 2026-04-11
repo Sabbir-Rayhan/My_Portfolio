@@ -94,9 +94,9 @@ export const projects = [
     longDescription:
       "Built with Next.js 15 and TypeScript. Uses better-auth for authentication and Axios for API communication. Admin panel handles user management, booking overview, and category management. Deployed on Vercel.",
     image: "/projects/skillbridge.png",
-    liveUrl: "",
+    liveUrl: "https://skillbridge-topaz.vercel.app",
     githubFrontend: "https://github.com/Sabbir-Rayhan/skillbridge-frontend2",
-    githubBackend: "",
+    githubBackend: "https://github.com/Sabbir-Rayhan/skillbridge-backend2",
     tags: ["Next.js 15", "TypeScript", "Tailwind CSS", "better-auth", "Axios", "REST API", "Vercel"],
     year: "2026",
     featured: true,

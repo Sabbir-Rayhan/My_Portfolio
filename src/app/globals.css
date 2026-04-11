@@ -75,3 +75,15 @@ html.lenis, html.lenis body { height: auto; }
   50% { opacity: 0; }
 }
 .cursor-blink { animation: blink 1s step-end infinite; }
+
+/* ── Shared Section Styles ── */
+.section-container { max-width: 1180px; margin: 0 auto; padding: 0 40px; }
+.section-label-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.section-label-line { width: 24px; height: 1px; }
+.section-label { font-size: 11px; font-family: monospace; text-transform: uppercase; letter-spacing: 3px; }
+.section-h2 { font-size: clamp(28px, 5vw, 50px); font-weight: 800; letter-spacing: -1.5px; color: #e2e8f0; margin-bottom: 48px; line-height: 1.1; }
+
+@media (max-width: 768px) {
+  .section-container { padding: 0 20px; }
+  .section-h2 { margin-bottom: 32px; }
+}
