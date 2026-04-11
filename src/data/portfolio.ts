@@ -17,9 +17,9 @@ export const personalInfo = {
   social: {
     github: "https://github.com/Sabbir-Rayhan",
     linkedin: "https://www.linkedin.com/in/s-r-mahee-b48821343",
-    codeforces: "https://codeforces.com/profile/S.R_Mahee",
+    codeforces: "https://codeforces.com/profile/S.R._Mahee",
   },
-  resumeUrl: "#",
+  resumeUrl: "/resume.pdf",
 };
 
 export const skills = [
