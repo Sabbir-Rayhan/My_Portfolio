@@ -94,7 +94,7 @@ export default function CPSection() {
         .cp-intro { color: #64748b; font-size: 15px; max-width: 520px; line-height: 1.8; margin-bottom: 48px; }
         .cp-grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
         .cp-big-card { padding: 32px; border-radius: 20px; background: linear-gradient(135deg, rgba(244,114,182,0.08), rgba(15,22,41,1), rgba(129,140,248,0.08)); border: 1px solid rgba(244,114,182,0.2); position: relative; overflow: hidden; }
-        .cp-big-num { font-size: clamp(60px, 8vw, 80px); font-weight: 900; font-family: monospace; line-height: 1; margin-bottom: 8px; }
+        .cp-big-num { font-size: clamp(40px, 8vw, 80px); font-weight: 900; font-family: monospace; line-height: 1; margin-bottom: 8px; }
         .cp-big-label { color: #64748b; font-size: 12px; font-family: monospace; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 28px; }
         .cp-mini-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .cp-mini-box { padding: 14px 10px; border-radius: 12px; background: rgba(5,8,16,0.6); border: 1px solid rgba(255,255,255,0.06); text-align: center; }
