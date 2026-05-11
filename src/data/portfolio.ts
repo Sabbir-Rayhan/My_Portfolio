@@ -177,8 +177,8 @@ export const competitiveProgramming = {
   totalSolved: "500+",
   platforms: [
     { name: "Codeforces", handle: "S.R_Mahee", solved: "321+", rating: "1077", color: "#f87171", url: "https://codeforces.com/profile/S.R_Mahee" },
-    { name: "LeetCode", handle: "SR_Mahee", solved: "100+", rating: "—", color: "#fbbf24", url: "#" },
-    { name: "Others", handle: "VJudge / CodeChef", solved: "80+", rating: "—", color: "#4ade80", url: "#" },
+    { name: "LeetCode", handle: "SR_Mahee", solved: "100+", rating: "—", color: "#fbbf24", url: "https://leetcode.com/u/mahee45/" },
+    { name: "Others", handle: "VJudge / CodeChef", solved: "80+", rating: "—", color: "#4ade80", url: "https://vjudge.net/user/mahee45" },
   ],
   stats: {
     maxStreak: 13,
