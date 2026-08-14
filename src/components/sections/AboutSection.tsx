@@ -20,10 +20,19 @@ export default function AboutSection() {
           <div>
             <AboutAnimations>
               <div className="about-text">
-                <p>I&apos;m a <strong>Computer Science student at CUET, Bangladesh</strong>, passionate about crafting software that solves real problems. My focus is full-stack web development — from architecting robust backend APIs to delivering polished, performant frontends.</p>
-                <p>I specialize in <strong style={{ color: "#38bdf8" }}>Next.js, TypeScript, Node.js, and PostgreSQL</strong> with Prisma ORM. I&apos;ve shipped live applications with payment integrations, role-based authentication systems, and real users.</p>
-                <p>Beyond individual work, I&apos;ve collaborated in <strong>university team projects</strong>, contributing to full-stack solutions from initial design through deployment. I care deeply about clean architecture and developer experience.</p>
+                <p>
+                  I&apos;m a <strong>Computer Science student at CUET, Bangladesh</strong>, passionate about software engineering and building reliable, practical solutions to real-world problems. I enjoy working across the software development lifecycle — from designing systems and architecting backend services to building polished, performant user interfaces.
+                </p>
+
+                <p>
+                  My primary stack includes <strong style={{ color: "#38bdf8" }}>Next.js, React, TypeScript, Node.js, PostgreSQL and Prisma</strong>. I have experience developing and deploying full-stack applications, payment integrations, role-based authentication, database-driven systems, and real users. I&apos;m particularly interested in writing clean, maintainable code and designing systems that are scalable and easy to evolve.
+                </p>
+
+                <p>
+                  Beyond individual projects, I&apos;ve collaborated on <strong>university software projects</strong>, contributing throughout the development process — from requirements and system design to implementation, testing, and deployment. I&apos;m continuously strengthening my software engineering fundamentals while building practical experience as a <strong>Software Engineer and Full-Stack Developer</strong>.
+                </p>
               </div>
+
             </AboutAnimations>
 
             <div className="about-info-grid">
@@ -31,7 +40,7 @@ export default function AboutSection() {
                 { icon: MapPin, label: "Location", value: personalInfo.location },
                 { icon: Mail, label: "Email", value: personalInfo.email },
                 { icon: GraduationCap, label: "University", value: "CUET, Bangladesh" },
-                { icon: Code2, label: "Focus", value: "Full-Stack Development" },
+                { icon: Code2, label: "Focus", value: "Software Engineer  |  Full-Stack Development" },
               ].map(({ icon: Icon, label, value }) => (
                 <div key={label} className="about-info-card">
                   <div className="about-info-icon"><Icon size={14} color="#38bdf8" /></div>
@@ -50,7 +59,7 @@ export default function AboutSection() {
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to tr, rgba(5,8,16,0.4), transparent)" }} />
               <div className="about-photo-caption">
                 <div style={{ fontSize: "13px", fontWeight: 600, color: "#e2e8f0" }}>{personalInfo.name}</div>
-                <div style={{ fontSize: "11px", color: "#38bdf8", fontFamily: "monospace" }}>Full-Stack Developer · CUET</div>
+                <div style={{ fontSize: "11px", color: "#38bdf8", fontFamily: "monospace" }}>Software Engineer · CUET</div>
               </div>
             </div>
 

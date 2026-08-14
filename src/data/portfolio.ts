@@ -2,7 +2,7 @@ export const personalInfo = {
   name: "Sabbir Rayhan Mahee",
   shortName: "SR Mahee",
   initials: "SRM",
-  role: "Full-Stack Web Developer",
+  role: "Software Engineer | Full-Stack Web Developer",
   tagline: "Building production-grade web applications from database to UI.",
   description:
     "I'm a Computer Science student at CUET with a strong focus on full-stack web development. I specialize in Next.js, Node.js, TypeScript, and PostgreSQL — building scalable, real-world applications with clean architecture and exceptional user experiences.",
@@ -11,7 +11,7 @@ export const personalInfo = {
   location: "Khulna, Bangladesh",
   university: "Chittagong University of Engineering and Technology (CUET)",
   degree: "B.Sc. in Computer Science and Engineering",
-  cgpa: "3.22",
+  cgpa: "3.28",
   photo: "/images/mahee.jpg",
   availability: "Available for opportunities",
   social: {
@@ -19,7 +19,7 @@ export const personalInfo = {
     linkedin: "https://www.linkedin.com/in/s-r-mahee-b48821343",
     codeforces: "https://codeforces.com/profile/S.R._Mahee",
   },
-  resumeUrl: "/resume.pdf",
+  resumeUrl: "/Sabbir_Rayhan_Mahee_Resume.pdf",
 };
 
 export const skills = [
@@ -34,6 +34,8 @@ export const skills = [
       "Shadcn UI",
       "Zustand",
       "React Hook Form",
+      "Better-Auth",
+      "Firebase",
       "Zod",
       "Framer Motion",
     ],
@@ -191,8 +193,8 @@ export const education = [
   {
     degree: "B.Sc. in Computer Science and Engineering",
     institution: "Chittagong University of Engineering and Technology (CUET)",
-    period: "March 2022 – Present",
-    cgpa: "3.22 / 4.00",
+    period: "Mar 2022 – Aug 2026",
+    cgpa: "3.28 / 4.00",
     url: "https://www.cuet.ac.bd",
   },
   {
