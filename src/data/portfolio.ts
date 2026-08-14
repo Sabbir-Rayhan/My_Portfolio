@@ -219,7 +219,7 @@ export const education = [
     institution: "Noapara Govt. College",
     period: "2018 – 2020",
     cgpa: "GPA 5.00 / 5.00",
-    url: "",
+    url: "https://noaparacollegeabhoynagar.jessoreboard.gov.bd/",
   },
 ];
 
