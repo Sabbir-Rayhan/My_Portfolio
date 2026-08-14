@@ -88,6 +88,22 @@ export const projects = [
     color: "#38bdf8",
   },
   {
+    id: "dragon-news",
+    title: "Dragon News",
+    subtitle: "Responsive News Portal",
+    description:
+      "A fully responsive news portal with category-based browsing, live news ticker, and social authentication. Features Google/GitHub login via Firebase, a mobile slide-in drawer for quick access to social links and widgets, and a clean, newspaper-inspired UI built for readability across every screen size.",
+    longDescription:
+      "Built with React 19 and Vite, styled with Tailwind CSS v4 and DaisyUI. Firebase Authentication powers social login (Google & GitHub) with protected routes for news detail pages. Fully responsive layout — collapsible chip-style category navigation on mobile, sticky sidebars on desktop, and a custom slide-in drawer that surfaces the right-hand widgets (login, socials, media) on smaller screens. Routing handled with React Router v7, deployed on Vercel.",
+    image: "/image/online-news.png",
+    liveUrl: "https://online-news-dusky.vercel.app",
+    githubFrontend: "https://github.com/Sabbir-Rayhan/Online-News-Portal",
+    tags: ["React 19", "Vite", "Tailwind CSS v4", "DaisyUI", "Firebase Auth", "React Router", "Vercel"],
+    year: "2026",
+    featured: true,
+    color: "#dc2626",
+  },
+  {
     id: "skillbridge",
     title: "SkillBridge",
     subtitle: "Tutoring Marketplace",
@@ -102,8 +118,9 @@ export const projects = [
     tags: ["Next.js 15", "TypeScript", "Tailwind CSS", "better-auth", "Axios", "REST API", "Vercel"],
     year: "2026",
     featured: true,
-    color: "#818cf8",
+    color: "#1b730f",
   },
+  
   {
     id: "cuetfinders",
     title: "CUETFinders",
@@ -207,8 +224,8 @@ export const education = [
 ];
 
 export const stats = [
-  { label: "Projects Shipped", value: "4+" },
+  { label: "Projects Shipped", value: "5+" },
   { label: "Problems Solved", value: "500+" },
-  { label: "Technologies", value: "15+" },
-  { label: "Years Coding", value: "3+" },
+  { label: "Technologies", value: "20+" },
+  { label: "Years Coding", value: "4+" },
 ];
