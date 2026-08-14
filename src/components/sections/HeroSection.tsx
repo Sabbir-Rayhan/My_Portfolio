@@ -8,6 +8,7 @@ import { ArrowDown, ExternalLink, Mail, GitFork, Link2, Code2 } from "lucide-rea
 import { personalInfo, stats } from "@/data/portfolio";
 
 const roles = [
+  "Software Engineer",
   "Full-Stack Web Developer",
   "Next.js Specialist",
   "TypeScript Engineer",
@@ -190,6 +191,8 @@ export default function HeroSection() {
               I build <strong style={{ color: "#e2e8f0", fontWeight: 600 }}>production-grade web applications</strong> end-to-end — from database schema and REST API design to pixel-perfect, responsive frontends.
               <span className="hero-stack">
                 <span className="stack-tag">Next.js</span>
+                <span className="stack-dot">·</span>
+                <span className="stack-tag">React</span>
                 <span className="stack-dot">·</span>
                 <span className="stack-tag">Node.js</span>
                 <span className="stack-dot">·</span>
