@@ -9,6 +9,10 @@ export const metadata: Metadata = {
   keywords: ["Full-Stack Developer","Next.js","React","TypeScript","Node.js","PostgreSQL","Bangladesh","CUET","Sabbir Rayhan Mahee"],
   authors: [{ name: personalInfo.name }],
   creator: personalInfo.name,
+  // 🔍 এখানে গুগল ভেরিফিকেশন কোডটি যুক্ত করা হলো
+  verification: {
+    google: "Mk3EfaAJhvUg7Utj6AV0cacpvfmY2tiJGiQS_zEIkEE",
+  },
   openGraph: {
     type: "website",
     title: `${personalInfo.name} | Full-Stack Developer`,
@@ -21,7 +25,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
+      <head suppressHydrationWarning>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
