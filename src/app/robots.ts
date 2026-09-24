@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://vercel.app',
+    sitemap: 'https://maheeportfolio.vercel.app/sitemap.xml',
   };
 }
