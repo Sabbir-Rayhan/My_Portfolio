@@ -1,206 +1,95 @@
 "use client";
-import { GitFork, Link2, Mail, Zap, ArrowUp, Heart } from "lucide-react";
+import { GitFork, Link2, Mail, Code2, MapPin } from "lucide-react";
 import { personalInfo } from "@/data/portfolio";
 import ScrollToTop from "@/components/layout/ScrollToTop";
 
-const navLinks = ["About","Skills","Experience","Projects","CP","Contact"];
+const navLinks = ["About", "Skills", "Experience", "Research", "Projects", "CP", "Contact"];
 const socials = [
   { label: "GitHub", href: personalInfo.social.github, icon: GitFork },
   { label: "LinkedIn", href: personalInfo.social.linkedin, icon: Link2 },
   { label: "Email", href: `mailto:${personalInfo.email}`, icon: Mail },
-  { label: "Codeforces", href: personalInfo.social.codeforces, icon: Zap },
+  { label: "Codeforces", href: personalInfo.social.codeforces, icon: Code2 },
 ];
 
 export default function Footer() {
   return (
     <footer className="footer">
-      {/* Top wave decoration */}
-      <div className="footer-top-line" />
-
       <div className="section-container">
+        <div className="footer-cta">
+          <h2 className="footer-cta-title">Have an idea? <em>Let&apos;s talk.</em></h2>
+          <a href={`mailto:${personalInfo.email}`} className="btn btn-primary"><Mail size={15} /> {personalInfo.email}</a>
+        </div>
+
         <div className="footer-grid">
-          {/* Brand */}
-          <div className="footer-brand-col">
+          <div className="footer-brand">
             <div className="footer-logo">
-              <div className="footer-logo-box">SR</div>
-              <span>Mahee<span style={{ color: "#38bdf8" }}>.</span></span>
+              <span className="footer-mark">SR</span>
+              <span>Mahee<span style={{ color: "var(--sand)" }}>.</span></span>
             </div>
             <p className="footer-bio">
-              Full-Stack Web Developer specializing in Next.js, TypeScript, Node.js and PostgreSQL. Building production-grade applications from Bangladesh 🇧🇩
+              Software engineer building production-grade web applications with Next.js, TypeScript, Node.js and PostgreSQL — and applying deep learning to real-world problems.
             </p>
             <div className="footer-socials">
               {socials.map(({ label, href, icon: Icon }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target={href.startsWith("mailto") ? undefined : "_blank"}
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className="footer-social"
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.color = "#38bdf8";
-                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(56,189,248,0.3)";
-                    (e.currentTarget as HTMLElement).style.background = "rgba(56,189,248,0.06)";
-                    (e.currentTarget as HTMLElement).style.transform = "translateY(-3px)";
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.color = "#475569";
-                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.08)";
-                    (e.currentTarget as HTMLElement).style.background = "transparent";
-                    (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
-                  }}
-                >
+                <a key={label} href={href} target={href.startsWith("mailto") ? undefined : "_blank"} rel="noopener noreferrer" aria-label={label} className="icon-btn">
                   <Icon size={15} />
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Navigation */}
           <div>
             <div className="footer-col-label">Navigation</div>
             {navLinks.map(link => (
-              <a
-                key={link}
-                href={`#${link.toLowerCase()}`}
-                className="footer-link"
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "#38bdf8"; (e.currentTarget as HTMLElement).style.paddingLeft = "4px"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "#475569"; (e.currentTarget as HTMLElement).style.paddingLeft = "0"; }}
-              >
-                {link}
-              </a>
+              <a key={link} href={`#${link.toLowerCase()}`} className="footer-link">{link}</a>
             ))}
           </div>
 
-          {/* Tech stack */}
           <div>
-            <div className="footer-col-label">Built With</div>
-            {["Next.js 15","TypeScript","Tailwind CSS","Framer Motion","GSAP","Lenis"].map(t => (
+            <div className="footer-col-label">Built with</div>
+            {["Next.js 16", "TypeScript", "Tailwind CSS", "Framer Motion", "Lenis"].map(t => (
               <div key={t} className="footer-tech">{t}</div>
             ))}
           </div>
 
-          {/* Contact quick */}
           <div>
-            <div className="footer-col-label">Get In Touch</div>
-            <a href={`mailto:${personalInfo.email}`} className="footer-email-quick">{personalInfo.email}</a>
-            <p className="footer-location">📍 {personalInfo.location}</p>
-            <div className="footer-avail">
-              <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#34d399", display: "inline-block", marginRight: "7px", flexShrink: 0 }} className="pulse-dot" />
-              Open to opportunities
-            </div>
+            <div className="footer-col-label">Get in touch</div>
+            <a href={`mailto:${personalInfo.email}`} className="footer-link footer-email">{personalInfo.email}</a>
+            <p className="footer-tech" style={{ display: "flex", alignItems: "center", gap: 6 }}><MapPin size={13} /> {personalInfo.location}</p>
+            <div className="footer-avail"><span className="status-dot" /> Open to opportunities</div>
           </div>
         </div>
 
-        {/* Bottom bar */}
         <div className="footer-bottom">
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px", color: "#334155", fontFamily: "monospace" }}>
-            <span>© {new Date().getFullYear()} Sabbir Rayhan Mahee</span>
-            <span style={{ color: "#1e293b" }}>·</span>
-            <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-              All rights reserved
-            </span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <span style={{ fontSize: "11px", color: "#1e293b", fontFamily: "monospace" }}>
-              Designed & Developed by <span style={{ color: "#38bdf8" }}>Sabbir Rayhan Mahee</span>
-            </span>
+          <span>© {new Date().getFullYear()} Sabbir Rayhan Mahee. All rights reserved.</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <span>Designed &amp; developed by <span style={{ color: "var(--text-soft)" }}>Sabbir Rayhan Mahee</span></span>
             <ScrollToTop />
           </div>
         </div>
       </div>
 
       <style>{`
-        .footer {
-          background: #050810;
-          border-top: 1px solid rgba(255,255,255,0.06);
-          position: relative;
-          overflow: hidden;
-        }
-        .footer::before {
-          content: '';
-          position: absolute;
-          bottom: 0; left: 50%; transform: translateX(-50%);
-          width: 600px; height: 200px;
-          background: rgba(56,189,248,0.02);
-          border-radius: 50%;
-          filter: blur(60px);
-          pointer-events: none;
-        }
-        .footer-top-line {
-          height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(56,189,248,0.3), rgba(129,140,248,0.3), transparent);
-        }
-        .footer-grid {
-          display: grid;
-          grid-template-columns: 1.8fr 1fr 1fr 1.4fr;
-          gap: 48px;
-          padding: 48px 0 40px;
-        }
-        .footer-brand-col {}
-        .footer-logo {
-          display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
-          font-weight: 700; font-size: 18px; color: #e2e8f0;
-        }
-        .footer-logo-box {
-          width: 36px; height: 36px; border-radius: 9px;
-          background: linear-gradient(135deg, #38bdf8, #818cf8);
-          display: flex; align-items: center; justify-content: center;
-          color: white; font-weight: 800; font-size: 12px; font-family: monospace;
-        }
-        .footer-bio {
-          color: #475569; font-size: 13px; line-height: 1.75;
-          margin-bottom: 20px; max-width: 280px;
-        }
+        .footer { position: relative; border-top: 1px solid var(--line); overflow: hidden; }
+        .footer::before { content: ""; position: absolute; top: -200px; left: 50%; transform: translateX(-50%); width: 900px; height: 400px; border-radius: 50%; background: rgba(140,192,168,0.06); filter: blur(90px); pointer-events: none; }
+        .footer-cta { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding: 72px 0 56px; border-bottom: 1px solid var(--line); }
+        .footer-cta-title { font-family: var(--font-serif); font-size: clamp(30px, 4vw, 46px); font-weight: 350; letter-spacing: -0.02em; color: var(--text); margin: 0; }
+        .footer-cta-title em { font-style: italic; padding-right: 0.06em; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+        .footer-grid { position: relative; display: grid; grid-template-columns: 1.6fr 1fr 1fr 1.3fr; gap: 48px; padding: 56px 0 48px; }
+        .footer-logo { display: flex; align-items: center; gap: 11px; margin-bottom: 18px; font-family: var(--font-serif); font-size: 21px; color: var(--text); }
+        .footer-mark { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: var(--font-sans); font-size: 13.5px; font-weight: 700; letter-spacing: 0.02em; color: #0d1714; background: var(--grad); box-shadow: inset 0 1px 0 rgba(255,255,255,0.35); }
+        .footer-bio { color: var(--muted); font-size: 14.5px; line-height: 1.75; margin: 0 0 22px; max-width: 320px; }
         .footer-socials { display: flex; gap: 8px; }
-        .footer-social {
-          width: 36px; height: 36px; display: flex; align-items: center;
-          justify-content: center; border-radius: 9px;
-          border: 1px solid rgba(255,255,255,0.08);
-          color: #475569; text-decoration: none;
-          transition: all 0.25s;
-        }
-        .footer-col-label {
-          font-size: 10px; font-family: monospace;
-          text-transform: uppercase; letter-spacing: 3px;
-          color: #94a3b8; margin-bottom: 16px; font-weight: 600;
-        }
-        .footer-link {
-          display: block; font-size: 13px; color: #475569;
-          text-decoration: none; margin-bottom: 10px;
-          transition: all 0.2s;
-        }
-        .footer-tech {
-          font-size: 12px; color: #475569; font-family: monospace;
-          margin-bottom: 9px; padding-left: 0;
-        }
-        .footer-email-quick {
-          display: block; font-size: 12px; color: #38bdf8;
-          text-decoration: none; margin-bottom: 10px; font-family: monospace;
-          transition: opacity 0.2s;
-          word-break: break-all;
-        }
-        .footer-email-quick:hover { opacity: 0.7; }
-        .footer-location { font-size: 12px; color: #475569; margin-bottom: 12px; }
-        .footer-avail {
-          display: flex; align-items: center;
-          font-size: 12px; color: #34d399; font-weight: 500;
-        }
-        .footer-bottom {
-          padding: 20px 0;
-          border-top: 1px solid rgba(255,255,255,0.04);
-          display: flex; justify-content: space-between;
-          align-items: center; flex-wrap: wrap; gap: 12px;
-        }
+        .footer-col-label { font-size: 12px; font-family: var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--subtle); margin-bottom: 18px; }
+        .footer-link { display: block; width: fit-content; font-size: 14.5px; color: var(--text-soft); text-decoration: none; margin-bottom: 11px; transition: color 0.2s; }
+        .footer-link:hover { color: var(--accent-strong); }
+        .footer-email { overflow-wrap: anywhere; }
+        .footer-tech { font-size: 14.5px; color: var(--muted); margin: 0 0 11px; }
+        .footer-avail { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--accent-strong); }
+        .footer-bottom { position: relative; padding: 24px 0 32px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--subtle); }
 
-        @media (max-width: 1024px) {
-          .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
-          .footer-brand-col { grid-column: 1 / -1; }
-        }
-        @media (max-width: 640px) {
-          .footer-grid { grid-template-columns: 1fr; }
-          .footer-bottom { flex-direction: column; align-items: flex-start; }
-        }
+        @media (max-width: 1024px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; } .footer-brand { grid-column: 1 / -1; } }
+        @media (max-width: 560px) { .footer-grid { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; align-items: flex-start; } .footer-cta .btn { width: 100%; } }
       `}</style>
     </footer>
   );

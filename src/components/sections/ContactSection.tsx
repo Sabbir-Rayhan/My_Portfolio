@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { Send, GitFork, Link2, Mail, MapPin, Copy, Check, Zap, MessageSquare } from "lucide-react";
+import { Send, GitFork, Link2, Mail, MapPin, Copy, Check, Code2, ArrowUpRight, AlertCircle } from "lucide-react";
 import { personalInfo } from "@/data/portfolio";
 
 export default function ContactSection() {
@@ -9,140 +9,179 @@ export default function ContactSection() {
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const [copied, setCopied] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [honey, setHoney] = useState("");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+  const sending = status === "sending";
+  const sent = status === "sent";
+  const ease = [0.16, 1, 0.3, 1] as const;
 
   const copyEmail = () => { navigator.clipboard.writeText(personalInfo.email); setCopied(true); setTimeout(() => setCopied(false), 2000); };
+  const mailtoFallback = `mailto:${personalInfo.email}?subject=${encodeURIComponent(`Portfolio contact from ${form.name || "a visitor"}`)}&body=${encodeURIComponent(`${form.message}\n\n— ${form.name} (${form.email})`)}`;
+
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); setSending(true);
-    await new Promise(r => setTimeout(r, 1200));
-    setSending(false); setSent(true); setForm({ name: "", email: "", message: "" });
-    setTimeout(() => setSent(false), 4000);
+    e.preventDefault();
+    if (honey) return;
+    setStatus("sending"); setErrorMsg("");
+    const subject = `New portfolio message from ${form.name}`;
+    try {
+      const web3Key = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
+      const res = web3Key
+        ? await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({ access_key: web3Key, subject, from_name: "SR Mahee Portfolio", name: form.name, email: form.email, message: form.message }),
+          })
+        : await fetch(`https://formsubmit.co/ajax/${personalInfo.email}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({ name: form.name, email: form.email, message: form.message, _subject: subject, _template: "table", _captcha: "false" }),
+          });
+      const data = await res.json().catch(() => ({}));
+      const ok = res.ok && (data.success === true || data.success === "true");
+      if (!ok) throw new Error(typeof data.message === "string" ? data.message : "Request failed");
+      setStatus("sent"); setForm({ name: "", email: "", message: "" });
+      setTimeout(() => setStatus("idle"), 5000);
+    } catch {
+      setStatus("error");
+      setErrorMsg("Your message couldn't be sent right now.");
+    }
   };
 
+  const socials = [
+    { label: "GitHub", handle: "Sabbir-Rayhan", href: personalInfo.social.github, icon: GitFork },
+    { label: "LinkedIn", handle: "s-r-mahee", href: personalInfo.social.linkedin, icon: Link2 },
+    { label: "Codeforces", handle: "S.R_Mahee", href: personalInfo.social.codeforces, icon: Code2 },
+  ];
+
   return (
-    <section id="contact" className="contact-section">
+    <section id="contact" className="section section-alt">
       <div ref={ref} className="section-container">
-        <div className="section-label-row">
-          <div className="section-label-line" style={{ background: "#38bdf8" }} />
-          <span className="section-label" style={{ color: "#38bdf8" }}>06 — Contact</span>
+        <div className="section-head">
+          <div className="eyebrow"><span className="eyebrow-num">07</span> Contact</div>
+          <h2 className="section-h2">Let&apos;s build something <em>great together</em></h2>
+          <p className="section-sub">
+            I&apos;m currently open to new opportunities — full-time roles, internships, freelance projects, or just a good conversation. My inbox is always open.
+          </p>
         </div>
-        <h2 className="section-h2">Let&apos;s build something <span className="gradient-text">great together</span></h2>
-        <p className="contact-intro">I&apos;m currently open to new opportunities — full-time roles, internships, freelance projects, or just a good conversation. My inbox is always open.</p>
 
         <div className="contact-layout">
-          <motion.form onSubmit={handleSubmit} initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6 }} className="contact-form">
+          <motion.form onSubmit={handleSubmit} initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, ease }} className="card contact-form">
             <div className="form-row">
-              <div className="form-group">
-                <label className="form-label">Your Name</label>
+              <label className="form-group">
+                <span className="form-label">Your name</span>
                 <input type="text" required placeholder="John Doe" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="form-input" />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Email</label>
+              </label>
+              <label className="form-group">
+                <span className="form-label">Email</span>
                 <input type="email" required placeholder="john@example.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} className="form-input" />
+              </label>
+            </div>
+            <label className="form-group">
+              <span className="form-label">Message</span>
+              <textarea required rows={6} placeholder="Tell me about your project or opportunity…" value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} className="form-input form-textarea" />
+            </label>
+            <input type="text" name="_honey" tabIndex={-1} autoComplete="off" value={honey} onChange={e => setHoney(e.target.value)} className="form-honey" aria-hidden />
+            <div className="form-foot">
+              <button type="submit" disabled={sending || sent} className="btn btn-primary form-submit">
+                {sent ? <><Check size={16} /> Message sent</> : sending ? <><span className="spinner" /> Sending…</> : <><Send size={15} /> Send message</>}
+              </button>
+              <div role="status" aria-live="polite" className="form-status">
+                {sent && <span className="form-ok"><Check size={14} /> Thanks! I&apos;ll get back to you within 24–48 hours.</span>}
+                {status === "error" && (
+                  <span className="form-err">
+                    <AlertCircle size={14} /> {errorMsg} <a href={mailtoFallback}>Send via your email app instead</a>.
+                  </span>
+                )}
               </div>
             </div>
-            <div className="form-group">
-              <label className="form-label">Message</label>
-              <textarea required rows={6} placeholder="Tell me about your project or opportunity..." value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} className="form-input form-textarea" />
-            </div>
-            <button type="submit" disabled={sending || sent} className="form-submit">
-              {sent ? <><Check size={15} /> Sent!</> : sending ? <><div className="spinner" /> Sending...</> : <><Send size={15} /> Send Message</>}
-            </button>
           </motion.form>
 
-          <motion.div initial={{ opacity: 0, x: 30 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6, delay: 0.15 }} className="contact-info">
-            <div className="contact-email-card">
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "14px" }}>
-                <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "rgba(56,189,248,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <Mail size={14} color="#38bdf8" />
-                </div>
-                <div>
-                  <div style={{ fontSize: "10px", color: "#334155", fontFamily: "monospace", textTransform: "uppercase", letterSpacing: "1px" }}>Direct email</div>
-                  <div style={{ fontSize: "12px", color: "#94a3b8" }}>{personalInfo.email}</div>
+          <motion.aside initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.12, ease }} className="contact-info">
+            <div className="card contact-email">
+              <div className="contact-email-row">
+                <div className="contact-icon"><Mail size={16} /></div>
+                <div style={{ minWidth: 0 }}>
+                  <div className="contact-k">Direct email</div>
+                  <a href={`mailto:${personalInfo.email}`} className="contact-v contact-mail">{personalInfo.email}</a>
                 </div>
               </div>
-              <button onClick={copyEmail} className="copy-btn">
-                {copied ? <Check size={13} /> : <Copy size={13} />} {copied ? "Copied!" : "Copy email"}
+              <button onClick={copyEmail} className="btn btn-ghost btn-sm" style={{ width: "100%" }}>
+                {copied ? <Check size={14} /> : <Copy size={14} />} {copied ? "Copied to clipboard" : "Copy email"}
               </button>
             </div>
 
-            <div className="contact-meta-row">
-              <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "rgba(52,211,153,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <MapPin size={14} color="#34d399" />
-              </div>
+            <div className="contact-meta">
+              <div className="contact-icon"><MapPin size={16} /></div>
               <div>
-                <div style={{ fontSize: "10px", color: "#334155", fontFamily: "monospace", textTransform: "uppercase", letterSpacing: "1px" }}>Based in</div>
-                <div style={{ fontSize: "13px", color: "#94a3b8" }}>{personalInfo.location}</div>
+                <div className="contact-k">Based in</div>
+                <div className="contact-v">{personalInfo.location}</div>
               </div>
             </div>
 
             <div className="contact-avail">
-              <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#34d399" }} className="pulse-dot" />
-              <span style={{ fontSize: "13px", color: "#34d399", fontWeight: 500 }}>Open to opportunities</span>
+              <span className="status-dot" />
+              <span>Open to opportunities · replies within 24–48h</span>
             </div>
 
-            <div>
-              <div className="socials-label">Find me online</div>
-              {[
-                { label: "GitHub", handle: "Sabbir-Rayhan", href: personalInfo.social.github, icon: GitFork },
-                { label: "LinkedIn", handle: "s-r-mahee", href: personalInfo.social.linkedin, icon: Link2 },
-                { label: "Codeforces", handle: "S.R_Mahee", href: personalInfo.social.codeforces, icon: Zap },
-              ].map(({ label, handle, href, icon: Icon }) => (
-                <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="social-row">
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <Icon size={15} color="#475569" />
-                    <span style={{ fontSize: "13px", fontWeight: 500, color: "#94a3b8" }}>{label}</span>
-                  </div>
-                  <span style={{ fontSize: "11px", color: "#334155", fontFamily: "monospace" }}>@{handle}</span>
+            <div className="contact-socials">
+              {socials.map(({ label, handle, href, icon: Icon }) => (
+                <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="contact-social">
+                  <span className="contact-social-left"><Icon size={15} /> {label}</span>
+                  <span className="contact-social-right mono">@{handle} <ArrowUpRight size={13} /></span>
                 </a>
               ))}
             </div>
-
-            <div className="contact-note">
-              <MessageSquare size={14} color="#334155" style={{ flexShrink: 0 }} />
-              <p style={{ fontSize: "12px", color: "#334155", lineHeight: 1.7, fontStyle: "italic", fontFamily: "Georgia,serif" }}>
-                I typically respond within 24–48 hours. For urgent matters, reach out via email or LinkedIn.
-              </p>
-            </div>
-          </motion.div>
+          </motion.aside>
         </div>
       </div>
 
       <style>{`
-        .contact-section { padding: 96px 0; background: #080d1a; border-top: 1px solid rgba(255,255,255,0.04); }
-        .contact-intro { color: #64748b; font-size: 15px; max-width: 480px; line-height: 1.8; margin-bottom: 48px; }
-        .contact-layout { display: grid; grid-template-columns: 1fr 340px; gap: 48px; }
-        .contact-form { display: flex; flex-direction: column; gap: 16px; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .form-group { display: flex; flex-direction: column; }
-        .form-label { font-size: 10px; font-family: monospace; text-transform: uppercase; letter-spacing: 2px; color: #475569; margin-bottom: 8px; }
-        .form-input { padding: 12px 16px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #e2e8f0; font-size: 13px; font-family: monospace; outline: none; transition: border-color 0.2s; width: 100%; }
-        .form-input:focus { border-color: rgba(56,189,248,0.5); }
-        .form-textarea { resize: none; }
-        .form-submit { display: flex; align-items: center; gap: 8px; padding: 13px 26px; border-radius: 10px; background: #38bdf8; color: #0f172a; font-weight: 700; font-size: 13px; border: none; cursor: pointer; width: fit-content; transition: all 0.2s; }
-        .form-submit:hover { background: #7dd3fc; }
-        .form-submit:disabled { opacity: 0.7; cursor: not-allowed; }
-        .spinner { width: 14px; height: 14px; border: 2px solid rgba(15,23,42,0.3); border-top-color: #0f172a; border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .contact-info { display: flex; flex-direction: column; gap: 12px; }
-        .contact-email-card { padding: 18px; border-radius: 14px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); }
-        .copy-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; background: none; color: #64748b; font-size: 11px; font-family: monospace; cursor: pointer; transition: all 0.2s; }
-        .copy-btn:hover { color: #38bdf8; border-color: rgba(56,189,248,0.3); }
-        .contact-meta-row { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); }
-        .contact-avail { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 12px; background: rgba(52,211,153,0.05); border: 1px solid rgba(52,211,153,0.15); }
-        .socials-label { font-size: 10px; font-family: monospace; text-transform: uppercase; letter-spacing: 3px; color: #334155; margin-bottom: 10px; }
-        .social-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); text-decoration: none; margin-bottom: 8px; transition: all 0.2s; }
-        .social-row:hover { border-color: rgba(56,189,248,0.3); }
-        .contact-note { display: flex; align-items: flex-start; gap: 10px; padding: 14px; border-radius: 10px; border: 1px dashed rgba(255,255,255,0.06); }
+        .contact-layout { display: grid; grid-template-columns: 1fr 380px; gap: 20px; align-items: start; }
+        .contact-form { padding: 36px; display: flex; flex-direction: column; gap: 20px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-label { font-size: 13px; color: var(--text-soft); font-weight: 500; }
+        .form-input {
+          padding: 14px 16px; border-radius: var(--radius-sm); width: 100%;
+          background: rgba(13,16,18,0.6); border: 1px solid var(--line-strong);
+          color: var(--text); font-size: 15px; font-family: var(--font-sans); outline: none;
+          transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+        .form-input::placeholder { color: var(--subtle); }
+        .form-input:focus { border-color: var(--accent-line); box-shadow: 0 0 0 4px rgba(140,192,168,0.1); background: rgba(13,16,18,0.85); }
+        .form-textarea { resize: vertical; min-height: 150px; line-height: 1.6; }
+        .form-submit { align-self: flex-start; flex-shrink: 0; }
+        .form-foot { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .form-status { font-size: 13.5px; line-height: 1.5; }
+        .form-ok, .form-err { display: inline-flex; align-items: flex-start; gap: 8px; }
+        .form-ok { color: var(--accent-strong); }
+        .form-err { color: #e8a3ab; display: inline; }
+        .form-err svg { display: inline-block; vertical-align: -2px; margin-right: 6px; }
+        .form-err a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
+        .form-honey { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+        .spinner { width: 14px; height: 14px; border: 2px solid rgba(13,23,20,0.3); border-top-color: #0d1714; border-radius: 50%; animation: spin 0.8s linear infinite; }
 
-        @media (max-width: 900px) {
-          .contact-layout { grid-template-columns: 1fr; }
-          .contact-info { order: -1; }
-        }
-        @media (max-width: 480px) {
-          .form-row { grid-template-columns: 1fr; }
-        }
+        .contact-info { display: flex; flex-direction: column; gap: 12px; }
+        .contact-email { padding: 22px; display: flex; flex-direction: column; gap: 18px; }
+        .contact-email-row { display: flex; align-items: center; gap: 14px; }
+        .contact-icon { width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--accent-strong); background: var(--accent-soft); }
+        .contact-k { font-size: 12px; color: var(--subtle); }
+        .contact-v { font-size: 14.5px; color: var(--text-soft); }
+        .contact-mail { text-decoration: none; overflow-wrap: anywhere; transition: color 0.2s; }
+        .contact-mail:hover { color: var(--accent-strong); }
+        .contact-meta { display: flex; align-items: center; gap: 14px; padding: 18px 22px; border-radius: var(--radius); border: 1px solid var(--line); background: rgba(255,255,255,0.015); }
+        .contact-avail { display: flex; align-items: center; gap: 12px; padding: 16px 22px; border-radius: var(--radius); border: 1px solid var(--accent-line); background: var(--accent-soft); color: var(--accent-strong); font-size: 13.5px; }
+        .contact-socials { display: flex; flex-direction: column; border-radius: var(--radius); border: 1px solid var(--line); overflow: hidden; }
+        .contact-social { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 22px; text-decoration: none; transition: background 0.2s; }
+        .contact-social + .contact-social { border-top: 1px solid var(--line); }
+        .contact-social:hover { background: rgba(255,255,255,0.025); }
+        .contact-social-left { display: inline-flex; align-items: center; gap: 12px; font-size: 14.5px; color: var(--text-soft); }
+        .contact-social-right { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--subtle); transition: color 0.2s; }
+        .contact-social:hover .contact-social-right { color: var(--accent-strong); }
+
+        @media (max-width: 960px) { .contact-layout { grid-template-columns: 1fr; } }
+        @media (max-width: 520px) { .form-row { grid-template-columns: 1fr; } .contact-form { padding: 24px; } }
       `}</style>
     </section>
   );

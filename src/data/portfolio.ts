@@ -2,10 +2,10 @@ export const personalInfo = {
   name: "Sabbir Rayhan Mahee",
   shortName: "SR Mahee",
   initials: "SRM",
-  role: "Software Engineer | Full-Stack Web Developer",
+  role: "Software Engineer | Full-Stack Developer | Applied ML",
   tagline: "Building production-grade web applications from database to UI.",
   description:
-    "I'm a Computer Science student at CUET with a strong focus on full-stack web development. I specialize in Next.js, Node.js, TypeScript, and PostgreSQL — building scalable, real-world applications with clean architecture and exceptional user experiences.",
+    "I'm a Computer Science student at CUET focused on full-stack web development and applied machine learning. I build scalable, real-world applications with Next.js, Node.js, TypeScript and PostgreSQL, and research deep learning solutions with Python and PyTorch.",
   email: "s.rayhanmahee@gmail.com",
   phone: "+880 1966-045476",
   location: "Khulna, Bangladesh",
@@ -53,6 +53,24 @@ export const skills = [
     ],
   },
   {
+    category: "AI & Machine Learning",
+    icon: "brain",
+    items: [
+      "Python",
+      "Machine Learning",
+      "Deep Learning",
+      "PyTorch",
+      "Hugging Face Transformers",
+      "scikit-learn",
+      "XGBoost",
+      "NumPy",
+      "Pandas",
+      "SHAP",
+      "Streamlit",
+      "Gradio",
+    ],
+  },
+  {
     category: "Database & ORM",
     icon: "database",
     items: ["PostgreSQL", "Prisma ORM", "MongoDB", "MySQL", "Neon"],
@@ -69,6 +87,66 @@ export const skills = [
   },
 ];
 
+export const research = [
+  {
+    id: "bangla-deepfake",
+    kind: "audio",
+    type: "B.Sc. Thesis",
+    status: "CUET · 2026",
+    title: "Deepfake Detection from Bangla Audio using Deep Learning",
+    paperTitle: "",
+    summary:
+      "Synthetic voice cloning is becoming increasingly realistic, while Bangla, spoken by over 230 million people, remains under-represented in audio anti-spoofing research. This thesis builds a deep learning system that distinguishes genuine Bangla speech from AI-generated speech, and deploys it as a public web application.",
+    highlights: [
+      "Fine-tuned Microsoft's self-supervised WavLM speech encoder, selectively unfreezing the upper transformer layers and adding a LayerNorm–GELU classification head.",
+      "Segment-level inference: recordings are resampled to 16 kHz, split into fixed windows, and per-segment probabilities are aggregated into a clip-level verdict with confidence.",
+      "Robust audio pipeline supporting WAV, MP3 and AAC/M4A uploads as well as live in-browser microphone recording (1–60 s).",
+      "Deployed on Hugging Face Spaces with a Gradio interface for real-time genuine-vs-fake detection.",
+    ],
+    metrics: [
+      { label: "Backbone", value: "WavLM" },
+      { label: "Task", value: "Real / Fake" },
+      { label: "Sample rate", value: "16 kHz" },
+      { label: "Input", value: "1–60 s" },
+    ],
+    meta: "Supervised by Ashim Dey, Assistant Professor, Dept. of CSE, CUET.",
+    tags: ["Python", "PyTorch", "Hugging Face Transformers", "WavLM", "Librosa", "Gradio"],
+    liveUrl: "https://huggingface.co/spaces/Mahee56/Bangla-Audio_Deepfake_Detector",
+    liveLabel: "Try the live demo",
+    sourceUrl: "https://huggingface.co/spaces/Mahee56/Bangla-Audio_Deepfake_Detector/tree/main",
+    sourceLabel: "Model & code",
+  },
+  {
+    id: "drug-solubility",
+    kind: "molecule",
+    type: "IEEE Conference Paper",
+    status: "Under review · 2026",
+    title: "Scaffold-Aware Drug Solubility Prediction",
+    paperTitle:
+      "Scaffold-Aware Drug Solubility Classification: Quantifying Generalization Gaps in Machine Learning Models with SMOTE and Extended Molecular Fingerprints on AqSolDB",
+    summary:
+      "Aqueous solubility determines whether a drug can be absorbed by the body, so predicting it early saves costly lab synthesis. This work classifies molecules as High, Medium or Low solubility directly from SMILES strings, and shows how conventional random splits overstate real-world model performance.",
+    highlights: [
+      "Bemis–Murcko scaffold split keeps test molecules structurally novel, revealing that random splits overestimate accuracy by 3.91% and ROC-AUC by 5.62%.",
+      "525-feature representation combining 13 RDKit physicochemical descriptors with dual ECFP4 + ECFP6 molecular fingerprints.",
+      "SMOTE rebalancing for the minority high-solubility class (10.6% of data) with a tuned XGBoost classifier.",
+      "SHAP explainability identifies LogP (lipophilicity) as the dominant predictor, consistent with established chemistry.",
+    ],
+    metrics: [
+      { label: "Compounds", value: "9,982" },
+      { label: "Features", value: "525" },
+      { label: "ROC-AUC (scaffold)", value: "0.886" },
+      { label: "Accuracy (scaffold)", value: "80.1%" },
+    ],
+    meta: "Dataset: AqSolDB (Sorkun et al., Scientific Data, 2019).",
+    tags: ["Python", "XGBoost", "scikit-learn", "RDKit", "SMOTE", "SHAP", "Streamlit"],
+    liveUrl: "https://drug-solubility-prediction-hpluq2ynhame4vpvyeuygn.streamlit.app/",
+    liveLabel: "Open the live app",
+    sourceUrl: "https://github.com/Sabbir-Rayhan/drug-solubility-prediction",
+    sourceLabel: "Source code",
+  },
+];
+
 export const projects = [
   {
     id: "planora",
@@ -78,7 +156,7 @@ export const projects = [
       "A full-stack event management platform where users can create, manage, and join events. Features role-based access (User/Admin), public & private events, SSLCommerz payment integration, invitation system with host approval/rejection, and smart payment retry flow.",
     longDescription:
       "Built with Next.js 16 App Router — SSR for SEO-critical pages (homepage, event listings, event details) and CSR for interactive components. Backend with Node.js, Express.js, TypeScript, and Prisma ORM over PostgreSQL deployed on Neon and Railway.",
-    image: "/projects/planora.png",
+    image: "/projects/planora.jpg",
     liveUrl: "https://planora-frontend-orpin.vercel.app",
     githubFrontend: "https://github.com/Sabbir-Rayhan/Planora-frontend",
     githubBackend: "https://github.com/Sabbir-Rayhan/Planora-backend",
@@ -95,7 +173,7 @@ export const projects = [
       "A fully responsive news portal with category-based browsing, live news ticker, and social authentication. Features Google/GitHub login via Firebase, a mobile slide-in drawer for quick access to social links and widgets, and a clean, newspaper-inspired UI built for readability across every screen size.",
     longDescription:
       "Built with React 19 and Vite, styled with Tailwind CSS v4 and DaisyUI. Firebase Authentication powers social login (Google & GitHub) with protected routes for news detail pages. Fully responsive layout — collapsible chip-style category navigation on mobile, sticky sidebars on desktop, and a custom slide-in drawer that surfaces the right-hand widgets (login, socials, media) on smaller screens. Routing handled with React Router v7, deployed on Vercel.",
-    image: "/image/online-news.png",
+    image: "/projects/dragon-news.jpg",
     liveUrl: "https://online-news-dusky.vercel.app",
     githubFrontend: "https://github.com/Sabbir-Rayhan/Online-News-Portal",
     tags: ["React 19", "Vite", "Tailwind CSS v4", "DaisyUI", "Firebase Auth", "React Router", "Vercel"],
@@ -111,7 +189,7 @@ export const projects = [
       "A tutoring marketplace where students browse tutor profiles, book sessions, and manage bookings from a personal dashboard. Features separate role-based dashboards for Students, Tutors, and Admins.",
     longDescription:
       "Built with Next.js 15 and TypeScript. Uses better-auth for authentication and Axios for API communication. Admin panel handles user management, booking overview, and category management. Deployed on Vercel.",
-    image: "/projects/skillbridge.png",
+    image: "/projects/skillbridge.jpg",
     liveUrl: "https://skillbridge-topaz.vercel.app",
     githubFrontend: "https://github.com/Sabbir-Rayhan/skillbridge-frontend2",
     githubBackend: "https://github.com/Sabbir-Rayhan/skillbridge-backend2",
@@ -129,7 +207,7 @@ export const projects = [
       "A web platform for CUET students to report and locate lost items on campus. Features search, filtering, item status tracking, and a fully mobile-optimized interface.",
     longDescription:
       "Backend powered by Node.js, Express.js, and MongoDB. Mobile-first responsive design ensures ease of use across all devices on campus.",
-    image: "/projects/cuetfinders.png",
+    image: "",
     liveUrl: "",
     githubFrontend: "https://github.com/Sabbir-Rayhan/CUETFinders",
     githubBackend: "",
@@ -146,7 +224,7 @@ export const projects = [
       "A fully functional e-commerce site with product listings, shopping cart, and secure checkout flow. Built with Node.js, EJS templating, and MongoDB for dynamic product management.",
     longDescription:
       "Server-rendered e-commerce application using EJS for templating. Includes product CRUD, cart management, and order processing.",
-    image: "/projects/ecommerce.png",
+    image: "",
     liveUrl: "",
     githubFrontend: "https://github.com/Sabbir-Rayhan/Ecommerce-Website",
     githubBackend: "",

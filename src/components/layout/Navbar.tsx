@@ -1,13 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Download } from "lucide-react";
+import { Menu, X, ArrowDownToLine } from "lucide-react";
 import { personalInfo } from "@/data/portfolio";
 
 const navLinks = [
   { label: "About", href: "#about" },
   { label: "Skills", href: "#skills" },
   { label: "Experience", href: "#experience" },
+  { label: "Research", href: "#research" },
   { label: "Projects", href: "#projects" },
   { label: "CP", href: "#cp" },
   { label: "Contact", href: "#contact" },
@@ -21,10 +22,11 @@ export default function Navbar() {
 
   useEffect(() => {
     const onScroll = () => {
-      setScrolled(window.scrollY > 60);
+      setScrolled(window.scrollY > 40);
       const total = document.documentElement.scrollHeight - window.innerHeight;
       setScrollProgress(total > 0 ? (window.scrollY / total) * 100 : 0);
     };
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -48,109 +50,69 @@ export default function Navbar() {
   return (
     <>
       <motion.header
-        initial={{ y: -80, opacity: 0 }}
+        initial={{ y: -24, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        className="navbar"
-        style={{
-          background: scrolled ? "rgba(5,8,16,0.92)" : "transparent",
-          backdropFilter: scrolled ? "blur(20px)" : "none",
-          borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "1px solid transparent",
-          padding: scrolled ? "0 40px" : "0 40px",
-          height: scrolled ? "58px" : "70px",
-        }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className={`navbar ${scrolled ? "navbar-scrolled" : ""}`}
       >
-        {/* Scroll progress bar */}
-        <div className="scroll-progress-bar">
-          <motion.div
-            className="scroll-progress-fill"
-            style={{ width: `${scrollProgress}%` }}
-          />
-        </div>
-
-        {/* Logo */}
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="nav-logo"
-        >
-          <div className="nav-logo-box">
-            <span>SR</span>
-          </div>
-          <span className="nav-logo-text">
-            Mahee<span style={{ color: "#38bdf8" }}>.</span>
-          </span>
-        </button>
-
-        {/* Desktop nav */}
-        <nav className="nav-links-desktop">
-          {navLinks.map(link => {
-            const isActive = activeSection === link.href.replace("#", "");
-            return (
-              <button
-                key={link.href}
-                onClick={() => scrollTo(link.href)}
-                className={`nav-link ${isActive ? "nav-link-active" : ""}`}
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="nav-active-pill"
-                    className="nav-active-pill"
-                    transition={{ type: "spring", bounce: 0.25, duration: 0.4 }}
-                  />
-                )}
-                <span style={{ position: "relative", zIndex: 1 }}>{link.label}</span>
-              </button>
-            );
-          })}
-        </nav>
-
-        {/* Right side */}
-        <div className="nav-right">
-          <a href={personalInfo.resumeUrl} download className="nav-resume-btn">
-            <Download size={13} />
-            <span>Resume</span>
-          </a>
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="nav-hamburger"
-          >
-            <AnimatePresence mode="wait">
-              {mobileOpen
-                ? <motion.div key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.15 }}><X size={18} /></motion.div>
-                : <motion.div key="m" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.15 }}><Menu size={18} /></motion.div>
-              }
-            </AnimatePresence>
+        <div className="navbar-inner">
+          <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="nav-logo" aria-label="SR Mahee — back to top">
+            <span className="nav-logo-mark">SR</span>
+            <span className="nav-logo-text">Mahee<span className="nav-logo-dot">.</span></span>
           </button>
+
+          <nav className="nav-links-desktop" aria-label="Primary">
+            {navLinks.map(link => {
+              const isActive = activeSection === link.href.replace("#", "");
+              return (
+                <button key={link.href} onClick={() => scrollTo(link.href)} className={`nav-link ${isActive ? "nav-link-active" : ""}`}>
+                  {isActive && (
+                    <motion.span layoutId="nav-active-pill" className="nav-active-pill" transition={{ type: "spring", bounce: 0.18, duration: 0.5 }} />
+                  )}
+                  <span style={{ position: "relative", zIndex: 1 }}>{link.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+
+          <div className="nav-right">
+            <a href={personalInfo.resumeUrl} download className="btn btn-ghost btn-sm nav-resume">
+              <ArrowDownToLine size={14} />
+              <span>Resume</span>
+            </a>
+            <button onClick={() => setMobileOpen(!mobileOpen)} className="nav-hamburger" aria-label="Toggle menu" aria-expanded={mobileOpen}>
+              {mobileOpen ? <X size={18} /> : <Menu size={18} />}
+            </button>
+          </div>
         </div>
+        <div className="scroll-progress" style={{ transform: `scaleX(${scrollProgress / 100})` }} />
       </motion.header>
 
-      {/* Mobile menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -8 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             className="mobile-menu"
           >
             {navLinks.map((link, i) => (
               <motion.button
                 key={link.href}
-                initial={{ opacity: 0, x: -12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.05 }}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.04 }}
                 onClick={() => scrollTo(link.href)}
                 className={`mobile-nav-link ${activeSection === link.href.replace("#", "") ? "mobile-nav-active" : ""}`}
               >
+                <span className="mono mobile-nav-num">0{i + 1}</span>
                 {link.label}
               </motion.button>
             ))}
-            <div className="mobile-menu-footer">
-              <a href={personalInfo.resumeUrl} download className="nav-resume-btn" style={{ width: "100%", justifyContent: "center" }}>
-                <Download size={13} /> Download Resume
-              </a>
-            </div>
+            <a href={personalInfo.resumeUrl} download className="btn btn-primary" style={{ marginTop: 12 }}>
+              <ArrowDownToLine size={15} /> Download Resume
+            </a>
           </motion.div>
         )}
       </AnimatePresence>
@@ -158,122 +120,85 @@ export default function Navbar() {
       <style>{`
         .navbar {
           position: fixed; top: 0; left: 0; right: 0; z-index: 50;
-          display: flex; align-items: center; justify-content: space-between;
-          transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+          border-bottom: 1px solid transparent;
+          transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
         }
-        .scroll-progress-bar {
-          position: absolute; bottom: 0; left: 0; right: 0; height: 1.5px;
-          background: rgba(255,255,255,0.05);
+        .navbar-scrolled {
+          background: rgba(13, 16, 18, 0.72);
+          backdrop-filter: blur(18px) saturate(140%);
+          -webkit-backdrop-filter: blur(18px) saturate(140%);
+          border-bottom-color: var(--line);
         }
-        .scroll-progress-fill {
-          height: 100%;
-          background: linear-gradient(90deg, #38bdf8, #818cf8);
-          transition: width 0.1s;
+        .navbar-inner {
+          max-width: 1160px; margin: 0 auto; padding: 0 40px;
+          height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 24px;
+          transition: height 0.4s ease;
+        }
+        .navbar-scrolled .navbar-inner { height: 62px; }
+        .scroll-progress {
+          position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+          background: linear-gradient(90deg, var(--accent), var(--sand));
+          transform-origin: left; opacity: 0.7;
         }
 
-        /* Logo */
-        .nav-logo {
-          display: flex; align-items: center; gap: 10px;
-          background: none; border: none; cursor: pointer;
-          flex-shrink: 0;
-        }
-        .nav-logo-box {
-          width: 36px; height: 36px; border-radius: 9px;
-          background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+        .nav-logo { display: flex; align-items: center; gap: 11px; background: none; border: none; cursor: pointer; padding: 0; }
+        .nav-logo-mark {
+          width: 34px; height: 34px; border-radius: 10px;
           display: flex; align-items: center; justify-content: center;
-          color: white; font-weight: 800; font-size: 12px; font-family: monospace;
-          box-shadow: 0 4px 14px rgba(56,189,248,0.3);
-          transition: transform 0.2s, box-shadow 0.2s;
+          font-family: var(--font-sans); font-size: 13.5px; font-weight: 700; letter-spacing: 0.02em;
+          color: #0d1714;
+          background: var(--grad);
+          box-shadow: 0 6px 18px -8px rgba(143, 184, 222, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+          transition: transform 0.3s ease;
         }
-        .nav-logo:hover .nav-logo-box {
-          transform: rotate(8deg) scale(1.05);
-          box-shadow: 0 6px 20px rgba(56,189,248,0.45);
-        }
-        .nav-logo-text {
-          font-weight: 700; font-size: 18px; color: #e2e8f0;
-          letter-spacing: -0.3px;
-        }
+        .nav-logo:hover .nav-logo-mark { transform: rotate(-6deg); }
+        .nav-logo-text { font-family: var(--font-serif); font-size: 21px; font-weight: 500; color: var(--text); letter-spacing: -0.01em; }
+        .nav-logo-dot { color: var(--sand); }
 
-        /* Desktop nav */
         .nav-links-desktop {
-          display: flex; align-items: center; gap: 2px;
+          display: flex; align-items: center; gap: 2px; padding: 4px;
+          border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,0.02);
         }
         .nav-link {
-          position: relative; padding: 7px 15px; border-radius: 8px;
+          position: relative; padding: 7px 16px; border-radius: 999px;
           background: none; border: none; cursor: pointer;
-          font-size: 13px; font-weight: 500; color: #64748b;
-          transition: color 0.2s;
+          font-size: 13.5px; font-weight: 450; color: var(--muted);
+          transition: color 0.25s;
         }
-        .nav-link:hover { color: #e2e8f0; }
-        .nav-link-active { color: #38bdf8; }
-        .nav-active-pill {
-          position: absolute; inset: 0; border-radius: 8px;
-          background: rgba(56,189,248,0.08);
-          border: 1px solid rgba(56,189,248,0.2);
-        }
+        .nav-link:hover { color: var(--text); }
+        .nav-link-active { color: var(--text); }
+        .nav-active-pill { position: absolute; inset: 0; border-radius: 999px; background: rgba(255,255,255,0.06); border: 1px solid var(--line-strong); }
 
-        /* Resume btn */
-        .nav-resume-btn {
-          display: flex; align-items: center; gap: 6px;
-          padding: 8px 16px; border-radius: 8px;
-          background: rgba(56,189,248,0.08);
-          border: 1px solid rgba(56,189,248,0.2);
-          color: #38bdf8; font-size: 12px; font-family: monospace;
-          text-decoration: none; transition: all 0.2s;
-          white-space: nowrap;
-        }
-        .nav-resume-btn:hover {
-          background: rgba(56,189,248,0.15);
-          border-color: rgba(56,189,248,0.4);
-          transform: translateY(-1px);
-          box-shadow: 0 4px 16px rgba(56,189,248,0.2);
-        }
-
-        /* Right */
-        .nav-right {
-          display: flex; align-items: center; gap: 8px; flex-shrink: 0;
-        }
-
-        /* Hamburger */
+        .nav-right { display: flex; align-items: center; gap: 10px; }
         .nav-hamburger {
-          display: none; width: 36px; height: 36px;
-          align-items: center; justify-content: center;
-          border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
-          background: none; color: #64748b; cursor: pointer;
-          transition: all 0.2s;
+          display: none; width: 40px; height: 40px; align-items: center; justify-content: center;
+          border-radius: 999px; border: 1px solid var(--line-strong); background: transparent;
+          color: var(--text-soft); cursor: pointer;
         }
-        .nav-hamburger:hover { color: #e2e8f0; border-color: rgba(255,255,255,0.2); }
 
-        /* Mobile menu */
         .mobile-menu {
-          position: fixed; top: 58px; left: 0; right: 0; z-index: 49;
-          background: rgba(5,8,16,0.98); backdrop-filter: blur(20px);
-          border-bottom: 1px solid rgba(255,255,255,0.06);
-          padding: 16px 24px 20px;
-          display: flex; flex-direction: column; gap: 4px;
+          position: fixed; top: 62px; left: 12px; right: 12px; z-index: 49;
+          background: rgba(17, 21, 24, 0.97); backdrop-filter: blur(18px);
+          border: 1px solid var(--line-strong); border-radius: 20px;
+          padding: 14px; display: flex; flex-direction: column; gap: 2px;
+          box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6);
         }
         .mobile-nav-link {
-          width: 100%; text-align: left;
-          padding: 13px 16px; border-radius: 10px;
-          background: none; border: none;
-          color: #64748b; font-size: 15px; font-weight: 500; cursor: pointer;
-          transition: all 0.15s;
+          display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
+          padding: 13px 14px; border-radius: 12px; background: none; border: none;
+          color: var(--text-soft); font-size: 16px; cursor: pointer; transition: background 0.2s, color 0.2s;
         }
-        .mobile-nav-link:hover { background: rgba(255,255,255,0.04); color: #e2e8f0; }
-        .mobile-nav-active { color: #38bdf8; background: rgba(56,189,248,0.06); }
-        .mobile-menu-footer {
-          margin-top: 12px; padding-top: 12px;
-          border-top: 1px solid rgba(255,255,255,0.06);
-          display: flex;
-        }
+        .mobile-nav-link:hover { background: rgba(255,255,255,0.03); color: var(--text); }
+        .mobile-nav-active { color: var(--accent-strong); background: var(--accent-soft); }
+        .mobile-nav-num { font-size: 11px; color: var(--subtle); }
 
         @media (max-width: 1024px) {
           .nav-links-desktop { display: none; }
           .nav-hamburger { display: flex; }
-          .navbar { padding: 0 24px !important; }
         }
-        @media (min-width: 1025px) {
-          .nav-hamburger { display: none; }
+        @media (max-width: 640px) {
+          .navbar-inner { padding: 0 20px; }
+          .nav-resume { display: none; }
         }
       `}</style>
     </>

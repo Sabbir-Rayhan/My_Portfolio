@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { ExternalLink, Trophy, Flame, Clock, Zap } from "lucide-react";
+import { ArrowUpRight, Trophy, Flame, CalendarDays } from "lucide-react";
 import { competitiveProgramming } from "@/data/portfolio";
 
 function CountUp({ target }: { target: number }) {
@@ -11,7 +11,7 @@ function CountUp({ target }: { target: number }) {
   useEffect(() => {
     if (!inView) return;
     let start = 0;
-    const step = target / (1600 / 16);
+    const step = target / (1400 / 16);
     const t = setInterval(() => { start = Math.min(start + step, target); setCount(Math.floor(start)); if (start >= target) clearInterval(t); }, 16);
     return () => clearInterval(t);
   }, [inView, target]);
@@ -21,32 +21,34 @@ function CountUp({ target }: { target: number }) {
 export default function CPSection() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  return (
-    <section id="cp" className="cp-section">
-      <div ref={ref} className="section-container">
-        <div className="section-label-row">
-          <div className="section-label-line" style={{ background: "#f472b6" }} />
-          <span className="section-label" style={{ color: "#f472b6" }}>05 — Competitive Programming</span>
-        </div>
-        <h2 className="section-h2">Sharpening <span style={{ color: "#f472b6" }}>the fundamentals</span></h2>
-        <p className="cp-intro">Active across multiple platforms since 2022. Problem-solving keeps me sharp on algorithms, data structures, and optimization — directly improving how I design backend systems.</p>
+  const ease = [0.16, 1, 0.3, 1] as const;
 
-        <div className="cp-grid-layout">
-          <motion.div initial={{ opacity: 0, x: -30 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6 }} className="cp-big-card">
-            <div className="gradient-text cp-big-num">{competitiveProgramming.totalSolved}</div>
-            <div className="cp-big-label">Total Problems Solved — All Platforms</div>
+  return (
+    <section id="cp" className="section">
+      <div ref={ref} className="section-container">
+        <div className="section-head">
+          <div className="eyebrow"><span className="eyebrow-num">06</span> Competitive Programming</div>
+          <h2 className="section-h2">Sharpening <em>the fundamentals</em></h2>
+          <p className="section-sub">
+            Active across multiple platforms since 2022. Problem-solving keeps me sharp on algorithms, data structures and optimization — directly improving how I design backend systems.
+          </p>
+        </div>
+
+        <div className="cp-layout">
+          <motion.div initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, ease }} className="card cp-big">
+            <div className="cp-big-label">Total problems solved</div>
+            <div className="cp-big-num serif">{competitiveProgramming.totalSolved}</div>
+            <div className="cp-big-note">across all platforms</div>
             <div className="cp-mini-grid">
               {[
-                { icon: Trophy, label: "CF Rating", value: competitiveProgramming.stats.cfRating, color: "#fbbf24" },
-                { icon: Flame, label: "Max Streak", value: competitiveProgramming.stats.maxStreak, suffix: "d", color: "#fb923c" },
-                { icon: Clock, label: "Since", value: competitiveProgramming.stats.activeSince, color: "#38bdf8" },
-              ].map(({ icon: Icon, label, value, suffix, color }) => (
-                <div key={label} className="cp-mini-box">
-                  <Icon size={14} color={color} style={{ marginBottom: "6px" }} />
-                  <div style={{ fontSize: "20px", fontWeight: 800, color, fontFamily: "monospace" }}>
-                    <CountUp target={value} />{suffix || ""}
-                  </div>
-                  <div style={{ fontSize: "9px", color: "#334155", fontFamily: "monospace", textTransform: "uppercase", letterSpacing: "1px", marginTop: "2px" }}>{label}</div>
+                { icon: Trophy, label: "CF rating", value: competitiveProgramming.stats.cfRating },
+                { icon: Flame, label: "Max streak", value: competitiveProgramming.stats.maxStreak, suffix: "d" },
+                { icon: CalendarDays, label: "Active since", value: competitiveProgramming.stats.activeSince },
+              ].map(({ icon: Icon, label, value, suffix }) => (
+                <div key={label} className="cp-mini">
+                  <Icon size={15} className="cp-mini-icon" />
+                  <div className="cp-mini-val serif"><CountUp target={value} />{suffix || ""}</div>
+                  <div className="cp-mini-label">{label}</div>
                 </div>
               ))}
             </div>
@@ -54,62 +56,76 @@ export default function CPSection() {
 
           <div className="cp-platforms">
             {competitiveProgramming.platforms.map((p, i) => (
-              <motion.a key={p.name} href={p.url} target="_blank" rel="noopener noreferrer"
-                initial={{ opacity: 0, x: 30 }} animate={inView ? { opacity: 1, x: 0 } : {}}
-                transition={{ duration: 0.5, delay: i * 0.15 }}
-                className="cp-platform-row">
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: `${p.color}15`, border: `1px solid ${p.color}30`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <Zap size={16} color={p.color} />
-                  </div>
+              <motion.a
+                key={p.name} href={p.url} target="_blank" rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.7, delay: 0.1 + i * 0.1, ease }}
+                className={`card cp-platform ${["tone-sky", "tone-sand", "tone-violet"][i % 3]}`}
+              >
+                <div className="cp-platform-left">
+                  <div className="cp-platform-mark serif">{p.name.charAt(0)}</div>
                   <div>
-                    <div style={{ fontWeight: 600, color: "#e2e8f0", fontSize: "14px" }}>{p.name}</div>
-                    <div style={{ fontSize: "11px", color: "#475569", fontFamily: "monospace" }}>@{p.handle}</div>
+                    <div className="cp-platform-name">{p.name}</div>
+                    <div className="cp-platform-handle mono">@{p.handle}</div>
                   </div>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                <div className="cp-platform-right">
                   {p.rating !== "—" && (
-                    <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: "10px", color: "#334155", fontFamily: "monospace" }}>Rating</div>
-                      <div style={{ fontWeight: 700, fontSize: "14px", color: p.color, fontFamily: "monospace" }}>{p.rating}</div>
+                    <div className="cp-platform-stat">
+                      <div className="cp-platform-stat-label">Rating</div>
+                      <div className="cp-platform-stat-val">{p.rating}</div>
                     </div>
                   )}
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: "10px", color: "#334155", fontFamily: "monospace" }}>Solved</div>
-                    <div style={{ fontWeight: 700, fontSize: "20px", color: p.color, fontFamily: "monospace" }}>{p.solved}</div>
+                  <div className="cp-platform-stat">
+                    <div className="cp-platform-stat-label">Solved</div>
+                    <div className="cp-platform-stat-val cp-solved">{p.solved}</div>
                   </div>
-                  <ExternalLink size={14} color="#334155" />
+                  <ArrowUpRight size={16} className="cp-arrow" />
                 </div>
               </motion.a>
             ))}
-            <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.6 }} className="cp-quote">
+            <motion.blockquote initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.5, duration: 0.8 }} className="cp-quote">
               &ldquo;Competitive programming isn&apos;t just about solving problems — it&apos;s about thinking systematically and writing code that works correctly under constraints.&rdquo;
-            </motion.div>
+            </motion.blockquote>
           </div>
         </div>
       </div>
 
       <style>{`
-        .cp-section { padding: 96px 0; }
-        .cp-intro { color: #64748b; font-size: 15px; max-width: 520px; line-height: 1.8; margin-bottom: 48px; }
-        .cp-grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
-        .cp-big-card { padding: 32px; border-radius: 20px; background: linear-gradient(135deg, rgba(244,114,182,0.08), rgba(15,22,41,1), rgba(129,140,248,0.08)); border: 1px solid rgba(244,114,182,0.2); position: relative; overflow: hidden; }
-        .cp-big-num { font-size: clamp(40px, 8vw, 80px); font-weight: 900; font-family: monospace; line-height: 1; margin-bottom: 8px; }
-        .cp-big-label { color: #64748b; font-size: 12px; font-family: monospace; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 28px; }
+        .cp-layout { display: grid; grid-template-columns: 1fr 1.1fr; gap: 20px; align-items: stretch; }
+        .cp-big { padding: 40px; position: relative; overflow: hidden; background: radial-gradient(500px 260px at 0% 0%, rgba(140,192,168,0.1), transparent 70%), radial-gradient(420px 240px at 100% 100%, rgba(180,167,224,0.08), transparent 70%), linear-gradient(180deg, var(--surface), rgba(22,27,30,0.6)); }
+        .cp-big-label { font-size: 13px; color: var(--muted); }
+        .cp-big-num { font-size: clamp(72px, 10vw, 120px); font-weight: 300; line-height: 1; color: var(--text); letter-spacing: -0.04em; margin: 10px 0 4px; }
+        .cp-big-note { font-size: 14px; color: var(--accent); margin-bottom: 36px; }
         .cp-mini-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .cp-mini-box { padding: 14px 10px; border-radius: 12px; background: rgba(5,8,16,0.6); border: 1px solid rgba(255,255,255,0.06); text-align: center; }
-        .cp-platforms { display: flex; flex-direction: column; gap: 12px; }
-        .cp-platform-row { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-radius: 14px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); text-decoration: none; transition: all 0.2s; }
-        .cp-platform-row:hover { border-color: rgba(255,255,255,0.14); transform: translateY(-2px); }
-        .cp-quote { padding: 16px; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.08); color: #475569; font-size: 13px; font-style: italic; font-family: Georgia,serif; line-height: 1.75; }
+        .cp-mini { padding: 16px; border-radius: var(--radius-sm); background: rgba(13,16,18,0.55); border: 1px solid var(--line); }
+        .cp-mini-icon { color: var(--sand); margin-bottom: 10px; }
+        .cp-mini-val { font-size: 26px; color: var(--text); line-height: 1.1; }
+        .cp-mini-label { font-size: 12px; color: var(--subtle); margin-top: 4px; }
 
-        @media (max-width: 900px) {
-          .cp-grid-layout { grid-template-columns: 1fr; }
-          .cp-big-num { font-size: 56px; }
-        }
+        .cp-platforms { display: flex; flex-direction: column; gap: 12px; }
+        .cp-platform { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 22px; text-decoration: none; }
+        .cp-platform:hover { border-color: rgb(var(--tone) / 0.32); transform: translateY(-2px); }
+        .cp-platform-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+        .cp-platform-mark { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: rgb(var(--tone)); background: rgb(var(--tone) / 0.1); border: 1px solid rgb(var(--tone) / 0.28); flex-shrink: 0; }
+        .cp-platform-name { font-size: 15.5px; font-weight: 500; color: var(--text); }
+        .cp-platform-handle { font-size: 12px; color: var(--subtle); }
+        .cp-platform-right { display: flex; align-items: center; gap: 22px; }
+        .cp-platform-stat { text-align: right; }
+        .cp-platform-stat-label { font-size: 11.5px; color: var(--subtle); }
+        .cp-platform-stat-val { font-size: 16px; font-weight: 500; color: var(--text-soft); }
+        .cp-solved { color: rgb(var(--tone)); }
+        .cp-arrow { color: var(--subtle); transition: color 0.2s, transform 0.2s; }
+        .cp-platform:hover .cp-arrow { color: var(--accent-strong); transform: translate(2px, -2px); }
+        .cp-quote { margin: 8px 0 0; padding: 20px 22px; border-left: 2px solid var(--accent-line); font-family: var(--font-serif); font-style: italic; font-size: 17px; line-height: 1.7; color: var(--muted); }
+
+        @media (max-width: 900px) { .cp-layout { grid-template-columns: 1fr; } .cp-big { padding: 28px; } }
         @media (max-width: 480px) {
-          .cp-mini-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-          .cp-platform-row { flex-direction: column; align-items: flex-start; gap: 12px; }
+          .cp-platform { flex-direction: column; align-items: flex-start; }
+          .cp-platform-right { width: 100%; justify-content: flex-start; }
+          .cp-arrow { margin-left: auto; }
+          .cp-mini { padding: 12px; }
+          .cp-mini-val { font-size: 22px; }
         }
       `}</style>
     </section>
