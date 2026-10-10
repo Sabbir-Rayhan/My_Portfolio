@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import type { Variants } from "framer-motion";
 import { Monitor, Server, Database, Wrench, Cpu, Brain } from "lucide-react";
-import { skills } from "@/data/portfolio";
+import { useData, formatNumber } from "@/data/useData";
 
 const iconMap: Record<string, React.ElementType> = { monitor: Monitor, server: Server, database: Database, tool: Wrench, cpu: Cpu, brain: Brain };
 const toneMap: Record<string, string> = {
@@ -23,6 +23,7 @@ const cardVariants: Variants = {
 };
 
 export default function SkillsSection() {
+  const { ui, skills, lang } = useData();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
@@ -31,11 +32,11 @@ export default function SkillsSection() {
       <div ref={ref} className="section-container">
         <div className="section-head-row">
           <div className="section-head">
-            <div className="eyebrow"><span className="eyebrow-num">02</span> Skills</div>
-            <h2 className="section-h2">My technical <em>toolkit</em></h2>
+            <div className="eyebrow"><span className="eyebrow-num">{formatNumber("02", lang)}</span> {ui.skills.eyebrow}</div>
+            <h2 className="section-h2">{ui.skills.h2[0]}<em>{ui.skills.h2[1]}</em></h2>
           </div>
           <p className="section-sub" style={{ marginTop: 0, maxWidth: 360 }}>
-            Technologies and tools I use to design, build and ship production apps — and to train and deploy machine learning models.
+            {ui.skills.sub}
           </p>
         </div>
 
@@ -46,12 +47,12 @@ export default function SkillsSection() {
               <motion.div key={group.category} variants={cardVariants} className={`card card-hover skill-card ${toneMap[group.category] ?? "tone-sage"} ${wideCategories.has(group.category) ? "skill-card-wide" : ""}`}>
                 <div className="skill-card-top">
                   <div className="skill-icon"><Icon size={18} /></div>
-                  <span className="skill-count mono">{String(group.items.length).padStart(2, "0")}</span>
+                  <span className="skill-count mono">{formatNumber(String(group.items.length).padStart(2, "0"), lang)}</span>
                 </div>
-                <h3 className="skill-cat">{group.category}</h3>
+                <h3 className="skill-cat">{group.label}</h3>
                 <div className="skill-chips">
-                  {group.items.map((skill) => (
-                    <span key={skill} className="chip">{skill}</span>
+                  {group.items.map((skill, si) => (
+                    <span key={si} className="chip">{skill}</span>
                   ))}
                 </div>
               </motion.div>

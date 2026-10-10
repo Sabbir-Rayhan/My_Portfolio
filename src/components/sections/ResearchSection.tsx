@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import type { Variants } from "framer-motion";
 import { ExternalLink, GitFork, Check, FlaskConical, AudioLines } from "lucide-react";
-import { research } from "@/data/portfolio";
+import { useData, formatNumber } from "@/data/useData";
 
 const containerVariants: Variants = { hidden: {}, visible: { transition: { staggerChildren: 0.14 } } };
 const cardVariants: Variants = {
@@ -45,6 +45,7 @@ function Molecule() {
 }
 
 export default function ResearchSection() {
+  const { ui, research, lang } = useData();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
@@ -53,11 +54,11 @@ export default function ResearchSection() {
       <div ref={ref} className="section-container">
         <div className="section-head-row">
           <div className="section-head">
-            <div className="eyebrow"><span className="eyebrow-num">04</span> Research</div>
-            <h2 className="section-h2">Research &amp; <em>applied AI</em></h2>
+            <div className="eyebrow"><span className="eyebrow-num">{formatNumber("04", lang)}</span> {ui.research.eyebrow}</div>
+            <h2 className="section-h2">{ui.research.h2[0]}<em>{ui.research.h2[1]}</em></h2>
           </div>
           <p className="section-sub" style={{ marginTop: 0, maxWidth: 380 }}>
-            Machine learning and deep learning work, from problem framing and rigorous evaluation to deployed, publicly usable models.
+            {ui.research.sub}
           </p>
         </div>
 
@@ -77,8 +78,8 @@ export default function ResearchSection() {
                   <p className="rs-desc">{r.summary}</p>
 
                   <ul className="rs-highlights">
-                    {r.highlights.map(h => (
-                      <li key={h}><span className="rs-check"><Check size={11} /></span>{h}</li>
+                    {r.highlights.map((h, hi) => (
+                      <li key={hi}><span className="rs-check"><Check size={11} /></span>{h}</li>
                     ))}
                   </ul>
 
@@ -101,8 +102,8 @@ export default function ResearchSection() {
                 <aside className="rs-side">
                   <div className="rs-visual">{r.kind === "audio" ? <Waveform /> : <Molecule />}</div>
                   <dl className="rs-metrics">
-                    {r.metrics.map(m => (
-                      <div key={m.label} className="rs-metric">
+                    {r.metrics.map((m, mi) => (
+                      <div key={mi} className="rs-metric">
                         <dt>{m.label}</dt>
                         <dd className="serif">{m.value}</dd>
                       </div>

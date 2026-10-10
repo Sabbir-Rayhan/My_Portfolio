@@ -4,17 +4,9 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowDown, Mail, GitFork, Link2, Code2, MapPin } from "lucide-react";
-import { personalInfo, stats } from "@/data/portfolio";
-
-const roles = [
-  "Software Engineer",
-  "Full-Stack Web Developer",
-  "Next.js Specialist",
-  "TypeScript Engineer",
-  "Backend Architect",
-  "Machine Learning Enthusiast",
-  "Problem Solver",
-];
+import { useData } from "@/data/useData";
+import { graphemes } from "@/lib/i18n";
+import Rich from "@/components/lang/Rich";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 const rise = (delay: number) => ({
@@ -24,32 +16,39 @@ const rise = (delay: number) => ({
 });
 
 export default function HeroSection() {
+  const { ui, personalInfo, stats, lang } = useData();
+  const roles = ui.hero.roles;
   const [roleIndex, setRoleIndex] = useState(0);
   const [displayed, setDisplayed] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Language changed: restart the typewriter so it never shows half of an English word in Bangla.
+  useEffect(() => { setDisplayed(""); setIsDeleting(false); setRoleIndex(0); }, [lang]);
+
   useEffect(() => {
-    const current = roles[roleIndex];
+    const current = graphemes(roles[roleIndex % roles.length]); // grapheme-safe: Bangla conjuncts are never cut in half
     const speed = isDeleting ? 40 : 80;
+    let hold: ReturnType<typeof setTimeout> | undefined;
     const timeout = setTimeout(() => {
+      const shown = graphemes(displayed).length;
       if (!isDeleting) {
-        const next = current.slice(0, displayed.length + 1);
+        const next = current.slice(0, shown + 1).join("");
         setDisplayed(next);
-        if (next === current) setTimeout(() => setIsDeleting(true), 2200);
+        if (shown + 1 >= current.length) hold = setTimeout(() => setIsDeleting(true), 2200);
       } else {
-        const next = current.slice(0, displayed.length - 1);
+        const next = current.slice(0, Math.max(0, shown - 1)).join("");
         setDisplayed(next);
         if (next === "") { setIsDeleting(false); setRoleIndex((prev) => (prev + 1) % roles.length); }
       }
     }, speed);
-    return () => clearTimeout(timeout);
-  }, [displayed, isDeleting, roleIndex]);
+    return () => { clearTimeout(timeout); if (hold) clearTimeout(hold); };
+  }, [displayed, isDeleting, roleIndex, roles]);
 
   const socials = [
     { href: personalInfo.social.github, label: "GitHub", icon: GitFork },
     { href: personalInfo.social.linkedin, label: "LinkedIn", icon: Link2 },
     { href: personalInfo.social.codeforces, label: "Codeforces", icon: Code2 },
-    { href: `mailto:${personalInfo.email}`, label: "Email", icon: Mail },
+    { href: `mailto:${personalInfo.email}`, label: ui.hero.socialEmail, icon: Mail },
   ];
 
   return (
@@ -69,28 +68,26 @@ export default function HeroSection() {
             </motion.div>
 
             <motion.h1 {...rise(0.2)} className="hero-name">
-              Sabbir Rayhan
-              <span className="hero-name-accent">Mahee<span className="hero-name-dot">.</span></span>
+              {ui.hero.nameFirst}
+              <span className="hero-name-accent">{ui.hero.nameLast}<span className="hero-name-dot">.</span></span>
             </motion.h1>
 
             <motion.div {...rise(0.35)} className="hero-role">
-              <span className="hero-role-prefix">I&apos;m a</span>
+              <span className="hero-role-prefix">{ui.hero.prefix}</span>
               <span className="hero-role-text">{displayed}</span>
               <span className="cursor-blink hero-cursor" aria-hidden />
             </motion.div>
 
             <motion.p {...rise(0.45)} className="hero-desc">
-              I build <strong>production-grade web applications</strong> end-to-end — from database schema
-              and REST API design to calm, responsive interfaces — and apply <strong>deep learning</strong> to
-              real-world problems through research.
+              <Rich text={ui.hero.desc} />
             </motion.p>
 
             <motion.div {...rise(0.55)} className="hero-btns">
               <button onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })} className="btn btn-primary">
-                View my work <ArrowRight size={16} />
+                {ui.hero.viewWork} <ArrowRight size={16} />
               </button>
               <button onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })} className="btn btn-ghost">
-                <Mail size={15} /> Get in touch
+                <Mail size={15} /> {ui.hero.getInTouch}
               </button>
             </motion.div>
 
@@ -115,7 +112,7 @@ export default function HeroSection() {
               <div className="hero-photo-box">
                 <Image
                   src={personalInfo.photo}
-                  alt={personalInfo.name}
+                  alt="Sabbir Rayhan Mahee"
                   fill
                   style={{ objectFit: "cover", objectPosition: "top center" }}
                   priority
@@ -127,14 +124,14 @@ export default function HeroSection() {
               <div className="hero-chip hero-chip-bl">
                 <div className="hero-chip-icon"><Code2 size={16} /></div>
                 <div>
-                  <div className="hero-chip-title">Full-Stack</div>
+                  <div className="hero-chip-title">{ui.hero.chipTitle}</div>
                   <div className="hero-chip-sub">Next.js · Node.js</div>
                 </div>
               </div>
 
               <div className="hero-chip hero-chip-tr">
-                <div className="hero-chip-num">500+</div>
-                <div className="hero-chip-sub">problems solved</div>
+                <div className="hero-chip-num">{stats[1].value}</div>
+                <div className="hero-chip-sub">{ui.hero.chipSub}</div>
               </div>
             </div>
           </motion.div>
@@ -153,7 +150,7 @@ export default function HeroSection() {
       <motion.button
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.4 }}
         onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
-        className="hero-scroll" aria-label="Scroll to about"
+        className="hero-scroll" aria-label={ui.hero.scrollAbout}
       >
         <motion.span animate={{ y: [0, 5, 0] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} style={{ display: "flex" }}>
           <ArrowDown size={15} />

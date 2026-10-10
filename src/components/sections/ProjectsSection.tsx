@@ -4,7 +4,7 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import type { Variants } from "framer-motion";
 import { ExternalLink, GitFork, ArrowUpRight, X, Plus } from "lucide-react";
 import Image from "next/image";
-import { projects } from "@/data/portfolio";
+import { useData, formatNumber } from "@/data/useData";
 
 const containerVariants: Variants = { hidden: {}, visible: { transition: { staggerChildren: 0.1 } } };
 const cardVariants: Variants = {
@@ -14,24 +14,26 @@ const cardVariants: Variants = {
 
 const projectTones = ["tone-sky", "tone-violet", "tone-sage", "tone-sand", "tone-rose"];
 
-type Project = (typeof projects)[number];
+type Project = ReturnType<typeof useData>["projects"][number];
 
 function ProjectLinks({ p }: { p: Project }) {
+  const { ui } = useData();
+  const t = ui.projects;
   return (
     <div className="proj-links" onClick={e => e.stopPropagation()}>
       {p.liveUrl && (
         <a href={p.liveUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm">
-          <ExternalLink size={14} /> Live demo
+          <ExternalLink size={14} /> {t.liveDemo}
         </a>
       )}
       {p.githubFrontend && (
         <a href={p.githubFrontend} target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm">
-          <GitFork size={14} /> {p.githubBackend ? "Frontend" : "Source"}
+          <GitFork size={14} /> {p.githubBackend ? t.frontend : t.source}
         </a>
       )}
       {"githubBackend" in p && p.githubBackend && (
         <a href={p.githubBackend} target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm">
-          <GitFork size={14} /> Backend
+          <GitFork size={14} /> {t.backend}
         </a>
       )}
     </div>
@@ -39,6 +41,8 @@ function ProjectLinks({ p }: { p: Project }) {
 }
 
 export default function ProjectsSection() {
+  const { ui, projects, lang } = useData();
+  const t = ui.projects;
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const [selected, setSelected] = useState<string | null>(null);
@@ -58,11 +62,11 @@ export default function ProjectsSection() {
       <div ref={ref} className="section-container">
         <div className="section-head-row">
           <div className="section-head">
-            <div className="eyebrow"><span className="eyebrow-num">05</span> Projects</div>
-            <h2 className="section-h2">Things I&apos;ve <em>built &amp; shipped</em></h2>
+            <div className="eyebrow"><span className="eyebrow-num">{formatNumber("05", lang)}</span> {t.eyebrow}</div>
+            <h2 className="section-h2">{t.h2[0]}<em>{t.h2[1]}</em></h2>
           </div>
           <a href="https://github.com/Sabbir-Rayhan" target="_blank" rel="noopener noreferrer" className="link-arrow">
-            View all on GitHub <ArrowUpRight size={15} />
+            {t.viewAll} <ArrowUpRight size={15} />
           </a>
         </div>
 
@@ -79,9 +83,9 @@ export default function ProjectsSection() {
             >
               <div className="featured-body">
                 <div className="featured-top">
-                  <span className="featured-index serif">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="featured-index serif">{formatNumber(String(i + 1).padStart(2, "0"), lang)}</span>
                   <span className="featured-year mono">{p.year}</span>
-                  <span className="featured-badge">Featured</span>
+                  <span className="featured-badge">{t.featured}</span>
                 </div>
                 <h3 className="featured-title">{p.title}</h3>
                 <p className="featured-sub">{p.subtitle}</p>
@@ -92,14 +96,14 @@ export default function ProjectsSection() {
                 </div>
                 <div className="featured-foot">
                   <ProjectLinks p={p} />
-                  <span className="featured-more"><Plus size={14} /> Details</span>
+                  <span className="featured-more"><Plus size={14} /> {t.details}</span>
                 </div>
               </div>
               {p.image && (
                 <div className="featured-shot">
                   <div className="featured-shot-bar"><span /><span /><span /></div>
                   <div className="featured-shot-img">
-                    <Image src={p.image} alt={`${p.title} screenshot`} fill sizes="(max-width:860px) 100vw, 520px" style={{ objectFit: "cover", objectPosition: "top center" }} />
+                    <Image src={p.image} alt={`${p.title} ${t.screenshot}`} fill sizes="(max-width:860px) 100vw, 520px" style={{ objectFit: "cover", objectPosition: "top center" }} />
                   </div>
                 </div>
               )}
@@ -113,8 +117,8 @@ export default function ProjectsSection() {
               <div className="other-top">
                 <span className="featured-year mono">{p.year}</span>
                 <div className="other-icons" onClick={e => e.stopPropagation()}>
-                  {p.githubFrontend && <a href={p.githubFrontend} target="_blank" rel="noopener noreferrer" className="icon-btn other-icon" aria-label="Source code"><GitFork size={14} /></a>}
-                  {p.liveUrl && <a href={p.liveUrl} target="_blank" rel="noopener noreferrer" className="icon-btn other-icon" aria-label="Live demo"><ExternalLink size={14} /></a>}
+                  {p.githubFrontend && <a href={p.githubFrontend} target="_blank" rel="noopener noreferrer" className="icon-btn other-icon" aria-label={t.sourceAria}><GitFork size={14} /></a>}
+                  {p.liveUrl && <a href={p.liveUrl} target="_blank" rel="noopener noreferrer" className="icon-btn other-icon" aria-label={t.liveDemo}><ExternalLink size={14} /></a>}
                 </div>
               </div>
               <h3 className="other-title">{p.title}</h3>
@@ -147,7 +151,7 @@ export default function ProjectsSection() {
               aria-label={sel.title}
               data-lenis-prevent
             >
-              <button onClick={() => setSelected(null)} className="icon-btn proj-modal-close" aria-label="Close"><X size={16} /></button>
+              <button onClick={() => setSelected(null)} className="icon-btn proj-modal-close" aria-label={t.close}><X size={16} /></button>
               <span className="featured-year mono">{sel.year}</span>
               <h3 className="proj-modal-title">{sel.title}</h3>
               <p className="featured-sub">{sel.subtitle}</p>

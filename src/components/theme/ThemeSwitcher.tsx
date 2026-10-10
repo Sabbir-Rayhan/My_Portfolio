@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Palette, Check } from "lucide-react";
 import { THEMES } from "@/lib/themes";
+import { useData } from "@/data/useData";
 import {
   subscribe, getSnapshot, getServerSnapshot,
   selectTheme, enableAuto, holdAuto,
@@ -14,9 +15,11 @@ function useTheme() {
 /** Swatches + auto-cycle switch. Used inside the desktop popover and the mobile menu. */
 export function ThemePanel({ compact = false }: { compact?: boolean }) {
   const { mode, themeId, reducedMotion } = useTheme();
+  const { ui } = useData();
+  const tr = ui.theme;
   return (
     <div className={`theme-panel ${compact ? "theme-panel-compact" : ""}`}>
-      <div className="theme-swatches" role="group" aria-label="Colour theme">
+      <div className="theme-swatches" role="group" aria-label={tr.group}>
         {THEMES.map(t => {
           const active = mode === "fixed" && themeId === t.id;
           return (
@@ -25,12 +28,12 @@ export function ThemePanel({ compact = false }: { compact?: boolean }) {
               type="button"
               className={`theme-swatch ${active ? "theme-swatch-active" : ""}`}
               aria-pressed={active}
-              aria-label={`${t.name} theme`}
+              aria-label={`${tr.names[t.id] ?? t.name} ${tr.suffix}`}
               onClick={() => selectTheme(t.id)}
               style={{ ["--sw-a" as string]: t.swatch[0], ["--sw-b" as string]: t.swatch[1], ["--sw-c" as string]: t.swatch[2] }}
             >
               <span className="theme-dot">{active && <Check size={13} strokeWidth={3} />}</span>
-              <span className="theme-swatch-name">{t.name}</span>
+              <span className="theme-swatch-name">{tr.names[t.id] ?? t.name}</span>
             </button>
           );
         })}
@@ -45,9 +48,9 @@ export function ThemePanel({ compact = false }: { compact?: boolean }) {
         onClick={() => (mode === "auto" ? selectTheme(themeId) : enableAuto())}
       >
         <span className="theme-auto-text">
-          <span className="theme-auto-title">Auto-cycle colours</span>
+          <span className="theme-auto-title">{tr.autoTitle}</span>
           <span className="theme-auto-sub">
-            {reducedMotion ? "Off because reduced motion is on" : mode === "auto" ? "Slowly shifts every ~15 s" : "Currently holding your choice"}
+            {reducedMotion ? tr.autoReduced : mode === "auto" ? tr.autoOn : tr.autoHeld}
           </span>
         </span>
         <span className="theme-switch" aria-hidden><span className="theme-switch-knob" /></span>
@@ -59,6 +62,7 @@ export function ThemePanel({ compact = false }: { compact?: boolean }) {
 /** Navbar button that opens the picker. */
 export default function ThemeSwitcher() {
   const [open, setOpen] = useState(false);
+  const { ui } = useData();
   const wrapRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
 
@@ -86,7 +90,7 @@ export default function ThemeSwitcher() {
         ref={btnRef}
         type="button"
         className="icon-btn theme-trigger"
-        aria-label="Change colour theme"
+        aria-label={ui.theme.change}
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={() => setOpen(o => !o)}
@@ -96,8 +100,8 @@ export default function ThemeSwitcher() {
       </button>
 
       {open && (
-        <div className="theme-pop" role="dialog" aria-label="Colour theme">
-          <p className="theme-pop-title mono">Colour theme</p>
+        <div className="theme-pop" role="dialog" aria-label={ui.theme.title}>
+          <p className="theme-pop-title mono">{ui.theme.title}</p>
           <ThemePanel />
         </div>
       )}

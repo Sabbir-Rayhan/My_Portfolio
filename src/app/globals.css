@@ -111,6 +111,46 @@ html.lenis, html.lenis body { height: auto; }
   color: var(--accent);
 }
 
+/* ── Bangla mode ──
+   Bengali needs its own fonts (Inter/Fraunces have no Bengali glyphs), no negative tracking
+   (it breaks conjuncts), no italics (Bengali has none), and a taller line-height for the matras. */
+html.lang-bn {
+  --font-sans: var(--font-bn-sans), "Noto Sans Bengali", "Hind Siliguri", "Kalpurush", system-ui, sans-serif;
+  --font-serif: var(--font-bn-serif), "Noto Serif Bengali", "Noto Sans Bengali", serif;
+}
+html.lang-bn body { font-feature-settings: normal; line-height: 1.75; }
+/* Bengali glyphs have a smaller x-height than Latin at the same px size; this evens them out. */
+html.lang-bn, html.lang-bn button, html.lang-bn input, html.lang-bn textarea { font-size-adjust: 0.56; }
+html.lang-bn strong, html.lang-bn b, html.lang-bn blockquote, html.lang-bn .cp-quote, html.lang-bn address { font-style: normal !important; }
+html.lang-bn *:not(.mono):not(.nav-logo-text):not(.nav-logo-mark) { letter-spacing: 0 !important; }
+html.lang-bn em, html.lang-bn .accent-italic { font-style: normal !important; font-weight: 500; }
+html.lang-bn .eyebrow { text-transform: none; font-family: var(--font-sans); font-size: 13px; }
+html.lang-bn .section-h2, html.lang-bn .hero-name, html.lang-bn .footer-cta-title { line-height: 1.28 !important; font-weight: 500; }
+html.lang-bn .hero-name { font-weight: 500 !important; }
+html.lang-bn .hero-name-accent { font-weight: 500 !important; }
+html.lang-bn .about-lead { line-height: 1.7 !important; font-weight: 400 !important; }
+html.lang-bn .btn { font-size: 15px; }
+html.lang-bn .chip { font-family: var(--font-sans); }
+html.lang-bn .mono { font-family: var(--font-sans); }
+html.lang-bn .theme-pop-title, html.lang-bn .edu-label { text-transform: none; font-family: var(--font-sans); letter-spacing: 0 !important; }
+
+/* ── Language switcher (segmented pill in the navbar) ── */
+.lang-switch {
+  display: inline-flex; align-items: center; padding: 3px; gap: 2px; border-radius: 999px;
+  border: 1px solid var(--line-strong); background: rgb(var(--text-rgb) / 0.03);
+}
+.lang-opt {
+  min-width: 38px; height: 30px; padding: 0 11px; border-radius: 999px; border: none; cursor: pointer;
+  background: transparent; color: var(--muted); font-family: var(--font-sans); font-size: 12.5px; font-weight: 600;
+  line-height: 1; transition: color 0.2s, background 0.25s;
+}
+.lang-opt:hover { color: var(--text); }
+.lang-opt-active { color: rgb(var(--on-accent-rgb)); background: var(--grad); }
+.lang-opt-active:hover { color: rgb(var(--on-accent-rgb)); }
+@media (max-width: 640px) {
+  .lang-opt { min-width: 34px; height: 28px; padding: 0 9px; font-size: 12px; }
+}
+
 /* ── Page background ── */
 .page-glow {
   position: fixed; inset: 0; z-index: -1; pointer-events: none;
