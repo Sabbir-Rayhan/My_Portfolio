@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { getCanvasPalette, THEME_EVENT } from "@/lib/themeEngine";
 
-type Node = { x: number; y: number; vx: number; vy: number; r: number; phase: number; c: string };
+type Node = { x: number; y: number; vx: number; vy: number; r: number; phase: number; ci: number };
 type Pulse = { a: number; b: number; t: number; speed: number };
 
-// teal, sky, violet, rose, amber, mint
-const PALETTE = ["118, 205, 190", "128, 172, 236", "176, 150, 240", "236, 146, 172", "236, 196, 120", "150, 220, 170"];
+// Node colours are not fixed any more: they come from the active colour theme
+// (see src/lib/themeEngine.ts) so the network fades together with the rest of the page.
 
 const LINK_DIST = 160;
 const MOUSE_DIST = 220;
@@ -49,7 +50,7 @@ export default function DynamicBackground() {
         vy: (Math.random() - 0.5) * 0.22,
         r: Math.random() * 1.4 + 0.7,
         phase: Math.random() * Math.PI * 2,
-        c: PALETTE[i % PALETTE.length],
+        ci: i,
       }));
       pulses = [];
     };
@@ -65,6 +66,8 @@ export default function DynamicBackground() {
     };
 
     const draw = (t: number) => {
+      const pal = getCanvasPalette();
+      const col = (n: Node) => pal[n.ci % pal.length];
       ctx.clearRect(0, 0, width, height);
       mouse.x += (mouse.tx - mouse.x) * 0.08;
       mouse.y += (mouse.ty - mouse.y) * 0.08;
@@ -102,8 +105,8 @@ export default function DynamicBackground() {
           const near = Math.max(0, 1 - Math.hypot(mx, my) / MOUSE_DIST);
           const alpha = (1 - d / LINK_DIST) * (0.1 + near * 0.25);
           const grad = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
-          grad.addColorStop(0, `rgba(${a.c}, ${alpha})`);
-          grad.addColorStop(1, `rgba(${b.c}, ${alpha})`);
+          grad.addColorStop(0, `rgba(${col(a)}, ${alpha})`);
+          grad.addColorStop(1, `rgba(${col(b)}, ${alpha})`);
           ctx.strokeStyle = grad;
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
@@ -141,15 +144,15 @@ export default function DynamicBackground() {
           const tx = a.x + (b.x - a.x) * Math.max(0, p.t - 0.18);
           const ty = a.y + (b.y - a.y) * Math.max(0, p.t - 0.18);
           const trail = ctx.createLinearGradient(tx, ty, x, y);
-          trail.addColorStop(0, `rgba(${b.c}, 0)`);
-          trail.addColorStop(1, `rgba(${b.c}, 0.55)`);
+          trail.addColorStop(0, `rgba(${col(b)}, 0)`);
+          trail.addColorStop(1, `rgba(${col(b)}, 0.55)`);
           ctx.strokeStyle = trail;
           ctx.lineWidth = 1.4;
           ctx.beginPath();
           ctx.moveTo(tx, ty);
           ctx.lineTo(x, y);
           ctx.stroke();
-          glow(x, y, 7, b.c, 0.5);
+          glow(x, y, 7, col(b), 0.5);
           return true;
         });
       }
@@ -157,8 +160,8 @@ export default function DynamicBackground() {
       for (const n of nodes) {
         const near = Math.max(0, 1 - Math.hypot(n.x - mouse.x, n.y - mouse.y) / MOUSE_DIST);
         const pulse = reduceMotion ? 0.5 : 0.5 + 0.5 * Math.sin(t * 0.0012 + n.phase);
-        if (n.r > 1.7) glow(n.x, n.y, 9 + pulse * 4, n.c, 0.12 + near * 0.2);
-        ctx.fillStyle = `rgba(${n.c}, ${0.3 + pulse * 0.25 + near * 0.4})`;
+        if (n.r > 1.7) glow(n.x, n.y, 9 + pulse * 4, col(n), 0.12 + near * 0.2);
+        ctx.fillStyle = `rgba(${col(n)}, ${0.3 + pulse * 0.25 + near * 0.4})`;
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r + near * 1.2, 0, Math.PI * 2);
         ctx.fill();
@@ -178,7 +181,9 @@ export default function DynamicBackground() {
 
     resize();
     raf = requestAnimationFrame(draw);
+    const onTheme = () => { if (reduceMotion) draw(0); };
     window.addEventListener("resize", onResize);
+    window.addEventListener(THEME_EVENT, onTheme);
     window.addEventListener("pointermove", onMove, { passive: true });
     document.addEventListener("pointerleave", onLeave);
     document.addEventListener("visibilitychange", onVisibility);
@@ -186,6 +191,7 @@ export default function DynamicBackground() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener(THEME_EVENT, onTheme);
       window.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerleave", onLeave);
       document.removeEventListener("visibilitychange", onVisibility);

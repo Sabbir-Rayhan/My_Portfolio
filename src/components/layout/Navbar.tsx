@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowDownToLine } from "lucide-react";
 import { personalInfo } from "@/data/portfolio";
+import ThemeSwitcher from "@/components/theme/ThemeSwitcher";
 
 const navLinks = [
   { label: "About", href: "#about" },
@@ -76,6 +77,7 @@ export default function Navbar() {
           </nav>
 
           <div className="nav-right">
+            <ThemeSwitcher />
             <a href={personalInfo.resumeUrl} download className="btn btn-ghost btn-sm nav-resume">
               <ArrowDownToLine size={14} />
               <span>Resume</span>
@@ -124,7 +126,7 @@ export default function Navbar() {
           transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
         }
         .navbar-scrolled {
-          background: rgba(13, 16, 18, 0.72);
+          background: rgb(var(--bg-rgb) / 0.72);
           backdrop-filter: blur(18px) saturate(140%);
           -webkit-backdrop-filter: blur(18px) saturate(140%);
           border-bottom-color: var(--line);
@@ -146,9 +148,9 @@ export default function Navbar() {
           width: 34px; height: 34px; border-radius: 10px;
           display: flex; align-items: center; justify-content: center;
           font-family: var(--font-sans); font-size: 13.5px; font-weight: 700; letter-spacing: 0.02em;
-          color: #0d1714;
+          color: rgb(var(--on-accent-rgb));
           background: var(--grad);
-          box-shadow: 0 6px 18px -8px rgba(143, 184, 222, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+          box-shadow: 0 6px 18px -8px rgb(var(--sky-rgb) / 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.35);
           transition: transform 0.3s ease;
         }
         .nav-logo:hover .nav-logo-mark { transform: rotate(-6deg); }
@@ -178,7 +180,7 @@ export default function Navbar() {
 
         .mobile-menu {
           position: fixed; top: 62px; left: 12px; right: 12px; z-index: 49;
-          background: rgba(17, 21, 24, 0.97); backdrop-filter: blur(18px);
+          background: rgb(var(--bg-alt-rgb) / 0.97); backdrop-filter: blur(18px);
           border: 1px solid var(--line-strong); border-radius: 20px;
           padding: 14px; display: flex; flex-direction: column; gap: 2px;
           box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6);

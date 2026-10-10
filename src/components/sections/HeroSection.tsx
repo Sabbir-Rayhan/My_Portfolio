@@ -166,15 +166,15 @@ export default function HeroSection() {
         .hero-grid-lines {
           position: absolute; inset: 0;
           background-image:
-            linear-gradient(rgba(236,232,225,0.035) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(236,232,225,0.035) 1px, transparent 1px);
+            linear-gradient(rgb(var(--text-rgb) / 0.035) 1px, transparent 1px),
+            linear-gradient(90deg, rgb(var(--text-rgb) / 0.035) 1px, transparent 1px);
           background-size: 72px 72px;
           mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 80%);
           -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 80%);
         }
         .hero-blob { position: absolute; border-radius: 50%; filter: blur(90px); }
-        .hero-blob-1 { width: 520px; height: 520px; top: -120px; right: -80px; background: rgba(140,192,168,0.11); }
-        .hero-blob-2 { width: 420px; height: 420px; bottom: -160px; left: -120px; background: rgba(217,188,140,0.06); }
+        .hero-blob-1 { width: 520px; height: 520px; top: -120px; right: -80px; background: rgb(var(--accent-rgb) / 0.11); }
+        .hero-blob-2 { width: 420px; height: 420px; bottom: -160px; left: -120px; background: rgb(var(--sand-rgb) / 0.06); }
 
         .hero-container { position: relative; z-index: 1; max-width: 1160px; margin: 0 auto; padding: 128px 40px 80px; width: 100%; }
         .hero-grid { display: grid; grid-template-columns: 1fr 380px; gap: 72px; align-items: center; }
@@ -215,12 +215,12 @@ export default function HeroSection() {
           position: relative; width: 340px; height: 430px; border-radius: 22px; overflow: hidden;
           box-shadow: 0 40px 80px -30px rgba(0,0,0,0.7);
         }
-        .hero-photo-shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,16,18,0.55), transparent 45%); }
+        .hero-photo-shade { position: absolute; inset: 0; background: linear-gradient(to top, rgb(var(--bg-rgb) / 0.55), transparent 45%); }
 
         .hero-chip {
           position: absolute; display: flex; align-items: center; gap: 12px;
           padding: 12px 16px; border-radius: 16px;
-          background: rgba(22,27,30,0.85); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+          background: rgb(var(--surface-rgb) / 0.85); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
           border: 1px solid var(--line-strong); box-shadow: 0 20px 40px -16px rgba(0,0,0,0.6);
         }
         .hero-chip-bl { bottom: 28px; left: -36px; }

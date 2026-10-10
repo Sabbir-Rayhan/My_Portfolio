@@ -4,6 +4,8 @@ import "./globals.css";
 import { personalInfo } from "@/data/portfolio";
 import SmoothScroll from "@/components/layout/SmoothScroll";
 import DynamicBackground from "@/components/layout/DynamicBackground";
+import ThemeController from "@/components/theme/ThemeController";
+import { STORAGE_KEY, bootTable } from "@/lib/themeEngine";
 
 const siteUrl = "https://maheeportfolio.vercel.app";
 
@@ -44,10 +46,16 @@ const websiteJsonLd = {
   url: siteUrl,
 };
 
+// Runs before first paint: if the visitor previously locked a colour theme, apply it
+// straight away so the page never flashes the default colours first.
+const themeBootScript = `(function(){try{var m=localStorage.getItem(${JSON.stringify(STORAGE_KEY)});var T=${JSON.stringify(bootTable())};var t=T[m];if(!t)return;var s=document.documentElement.style;for(var k in t.v)s.setProperty(k,t.v[k]);var e=document.querySelector('meta[name="theme-color"]');if(e)e.setAttribute('content',t.m);}catch(e){}})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${fraunces.variable} ${jetbrains.variable}`}>
       <body className="antialiased">
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
+        <ThemeController />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
