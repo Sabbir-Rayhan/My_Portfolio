@@ -1,22 +1,24 @@
 "use client";
 import { GitFork, Link2, Mail, Code2, MapPin } from "lucide-react";
 import { personalInfo } from "@/data/portfolio";
+import { useData, formatNumber } from "@/data/useData";
 import ScrollToTop from "@/components/layout/ScrollToTop";
 
-const navLinks = ["About", "Skills", "Experience", "Research", "Projects", "CP", "Contact"];
-const socials = [
-  { label: "GitHub", href: personalInfo.social.github, icon: GitFork },
-  { label: "LinkedIn", href: personalInfo.social.linkedin, icon: Link2 },
-  { label: "Email", href: `mailto:${personalInfo.email}`, icon: Mail },
-  { label: "Codeforces", href: personalInfo.social.codeforces, icon: Code2 },
-];
-
+const navKeys = ["about", "skills", "experience", "research", "projects", "cp", "contact"] as const;
 export default function Footer() {
+  const { ui, personalInfo: info, lang } = useData();
+  const f = ui.footer;
+  const socials = [
+    { label: "GitHub", href: personalInfo.social.github, icon: GitFork },
+    { label: "LinkedIn", href: personalInfo.social.linkedin, icon: Link2 },
+    { label: ui.hero.socialEmail, href: `mailto:${personalInfo.email}`, icon: Mail },
+    { label: "Codeforces", href: personalInfo.social.codeforces, icon: Code2 },
+  ];
   return (
     <footer className="footer">
       <div className="section-container">
         <div className="footer-cta">
-          <h2 className="footer-cta-title">Have an idea? <em>Let&apos;s talk.</em></h2>
+          <h2 className="footer-cta-title">{f.ctaTitle[0]}<em>{f.ctaTitle[1]}</em></h2>
           <a href={`mailto:${personalInfo.email}`} className="btn btn-primary"><Mail size={15} /> {personalInfo.email}</a>
         </div>
 
@@ -26,9 +28,7 @@ export default function Footer() {
               <span className="footer-mark">SR</span>
               <span>Mahee<span style={{ color: "var(--sand)" }}>.</span></span>
             </div>
-            <p className="footer-bio">
-              Software engineer building production-grade web applications with Next.js, TypeScript, Node.js and PostgreSQL — and applying deep learning to real-world problems.
-            </p>
+            <p className="footer-bio">{f.bio}</p>
             <div className="footer-socials">
               {socials.map(({ label, href, icon: Icon }) => (
                 <a key={label} href={href} target={href.startsWith("mailto") ? undefined : "_blank"} rel="noopener noreferrer" aria-label={label} className="icon-btn">
@@ -39,31 +39,31 @@ export default function Footer() {
           </div>
 
           <div>
-            <div className="footer-col-label">Navigation</div>
-            {navLinks.map(link => (
-              <a key={link} href={`#${link.toLowerCase()}`} className="footer-link">{link}</a>
+            <div className="footer-col-label">{f.navigation}</div>
+            {navKeys.map(key => (
+              <a key={key} href={`#${key}`} className="footer-link">{ui.nav[key]}</a>
             ))}
           </div>
 
           <div>
-            <div className="footer-col-label">Built with</div>
+            <div className="footer-col-label">{f.builtWith}</div>
             {["Next.js 16", "TypeScript", "Tailwind CSS", "Framer Motion", "Lenis"].map(t => (
               <div key={t} className="footer-tech">{t}</div>
             ))}
           </div>
 
           <div>
-            <div className="footer-col-label">Get in touch</div>
+            <div className="footer-col-label">{f.getInTouch}</div>
             <a href={`mailto:${personalInfo.email}`} className="footer-link footer-email">{personalInfo.email}</a>
-            <p className="footer-tech" style={{ display: "flex", alignItems: "center", gap: 6 }}><MapPin size={13} /> {personalInfo.location}</p>
-            <div className="footer-avail"><span className="status-dot" /> Open to opportunities</div>
+            <p className="footer-tech" style={{ display: "flex", alignItems: "center", gap: 6 }}><MapPin size={13} /> {info.location}</p>
+            <div className="footer-avail"><span className="status-dot" /> {f.avail}</div>
           </div>
         </div>
 
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} Sabbir Rayhan Mahee. All rights reserved.</span>
+          <span>© {formatNumber(new Date().getFullYear(), lang)} {f.owner}{lang === "bn" ? "। " : ". "}{f.rights}</span>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <span>Designed &amp; developed by <span style={{ color: "var(--text-soft)" }}>Sabbir Rayhan Mahee</span></span>
+            <span>{f.designedBy} <span style={{ color: "var(--text-soft)" }}>{f.owner}</span></span>
             <ScrollToTop />
           </div>
         </div>

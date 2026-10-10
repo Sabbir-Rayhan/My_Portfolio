@@ -3,15 +3,17 @@ import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { Send, GitFork, Link2, Mail, MapPin, Copy, Check, Code2, ArrowUpRight, AlertCircle } from "lucide-react";
 import { personalInfo } from "@/data/portfolio";
+import { useData, formatNumber } from "@/data/useData";
 
 export default function ContactSection() {
+  const { ui, personalInfo: info, lang } = useData();
+  const t = ui.contact;
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const [copied, setCopied] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [honey, setHoney] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
-  const [errorMsg, setErrorMsg] = useState("");
   const sending = status === "sending";
   const sent = status === "sent";
   const ease = [0.16, 1, 0.3, 1] as const;
@@ -22,7 +24,7 @@ export default function ContactSection() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (honey) return;
-    setStatus("sending"); setErrorMsg("");
+    setStatus("sending");
     const subject = `New portfolio message from ${form.name}`;
     try {
       const web3Key = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
@@ -44,7 +46,6 @@ export default function ContactSection() {
       setTimeout(() => setStatus("idle"), 5000);
     } catch {
       setStatus("error");
-      setErrorMsg("Your message couldn't be sent right now.");
     }
   };
 
@@ -58,10 +59,10 @@ export default function ContactSection() {
     <section id="contact" className="section section-alt">
       <div ref={ref} className="section-container">
         <div className="section-head">
-          <div className="eyebrow"><span className="eyebrow-num">07</span> Contact</div>
-          <h2 className="section-h2">Let&apos;s build something <em>great together</em></h2>
+          <div className="eyebrow"><span className="eyebrow-num">{formatNumber("07", lang)}</span> {t.eyebrow}</div>
+          <h2 className="section-h2">{t.h2[0]}<em>{t.h2[1]}</em></h2>
           <p className="section-sub">
-            I&apos;m currently open to new opportunities — full-time roles, internships, freelance projects, or just a good conversation. My inbox is always open.
+            {t.sub}
           </p>
         </div>
 
@@ -69,28 +70,28 @@ export default function ContactSection() {
           <motion.form onSubmit={handleSubmit} initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, ease }} className="card contact-form">
             <div className="form-row">
               <label className="form-group">
-                <span className="form-label">Your name</span>
-                <input type="text" required placeholder="John Doe" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="form-input" />
+                <span className="form-label">{t.yourName}</span>
+                <input type="text" required placeholder={t.namePh} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="form-input" />
               </label>
               <label className="form-group">
-                <span className="form-label">Email</span>
-                <input type="email" required placeholder="john@example.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} className="form-input" />
+                <span className="form-label">{t.email}</span>
+                <input type="email" required placeholder={t.emailPh} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} className="form-input" />
               </label>
             </div>
             <label className="form-group">
-              <span className="form-label">Message</span>
-              <textarea required rows={6} placeholder="Tell me about your project or opportunity…" value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} className="form-input form-textarea" />
+              <span className="form-label">{t.message}</span>
+              <textarea required rows={6} placeholder={t.messagePh} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} className="form-input form-textarea" />
             </label>
             <input type="text" name="_honey" tabIndex={-1} autoComplete="off" value={honey} onChange={e => setHoney(e.target.value)} className="form-honey" aria-hidden />
             <div className="form-foot">
               <button type="submit" disabled={sending || sent} className="btn btn-primary form-submit">
-                {sent ? <><Check size={16} /> Message sent</> : sending ? <><span className="spinner" /> Sending…</> : <><Send size={15} /> Send message</>}
+                {sent ? <><Check size={16} /> {t.sent}</> : sending ? <><span className="spinner" /> {t.sending}</> : <><Send size={15} /> {t.send}</>}
               </button>
               <div role="status" aria-live="polite" className="form-status">
-                {sent && <span className="form-ok"><Check size={14} /> Thanks! I&apos;ll get back to you within 24–48 hours.</span>}
+                {sent && <span className="form-ok"><Check size={14} /> {t.thanks}</span>}
                 {status === "error" && (
                   <span className="form-err">
-                    <AlertCircle size={14} /> {errorMsg} <a href={mailtoFallback}>Send via your email app instead</a>.
+                    <AlertCircle size={14} /> {t.error} <a href={mailtoFallback}>{t.fallback}</a>.
                   </span>
                 )}
               </div>
@@ -102,26 +103,26 @@ export default function ContactSection() {
               <div className="contact-email-row">
                 <div className="contact-icon"><Mail size={16} /></div>
                 <div style={{ minWidth: 0 }}>
-                  <div className="contact-k">Direct email</div>
+                  <div className="contact-k">{t.directEmail}</div>
                   <a href={`mailto:${personalInfo.email}`} className="contact-v contact-mail">{personalInfo.email}</a>
                 </div>
               </div>
               <button onClick={copyEmail} className="btn btn-ghost btn-sm" style={{ width: "100%" }}>
-                {copied ? <Check size={14} /> : <Copy size={14} />} {copied ? "Copied to clipboard" : "Copy email"}
+                {copied ? <Check size={14} /> : <Copy size={14} />} {copied ? t.copied : t.copyEmail}
               </button>
             </div>
 
             <div className="contact-meta">
               <div className="contact-icon"><MapPin size={16} /></div>
               <div>
-                <div className="contact-k">Based in</div>
-                <div className="contact-v">{personalInfo.location}</div>
+                <div className="contact-k">{t.basedIn}</div>
+                <div className="contact-v">{info.location}</div>
               </div>
             </div>
 
             <div className="contact-avail">
               <span className="status-dot" />
-              <span>Open to opportunities · replies within 24–48h</span>
+              <span>{t.avail}</span>
             </div>
 
             <div className="contact-socials">

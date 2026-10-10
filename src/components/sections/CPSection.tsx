@@ -2,9 +2,9 @@
 import { useRef, useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { ArrowUpRight, Trophy, Flame, CalendarDays } from "lucide-react";
-import { competitiveProgramming } from "@/data/portfolio";
+import { useData, formatNumber } from "@/data/useData";
 
-function CountUp({ target }: { target: number }) {
+function CountUp({ target, lang }: { target: number; lang: "en" | "bn" }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
@@ -15,10 +15,12 @@ function CountUp({ target }: { target: number }) {
     const t = setInterval(() => { start = Math.min(start + step, target); setCount(Math.floor(start)); if (start >= target) clearInterval(t); }, 16);
     return () => clearInterval(t);
   }, [inView, target]);
-  return <span ref={ref}>{count}</span>;
+  return <span ref={ref}>{formatNumber(count, lang)}</span>;
 }
 
 export default function CPSection() {
+  const { ui, competitiveProgramming, lang } = useData();
+  const t = ui.cp;
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const ease = [0.16, 1, 0.3, 1] as const;
@@ -27,27 +29,27 @@ export default function CPSection() {
     <section id="cp" className="section">
       <div ref={ref} className="section-container">
         <div className="section-head">
-          <div className="eyebrow"><span className="eyebrow-num">06</span> Competitive Programming</div>
-          <h2 className="section-h2">Sharpening <em>the fundamentals</em></h2>
+          <div className="eyebrow"><span className="eyebrow-num">{formatNumber("06", lang)}</span> {t.eyebrow}</div>
+          <h2 className="section-h2">{t.h2[0]}<em>{t.h2[1]}</em></h2>
           <p className="section-sub">
-            Active across multiple platforms since 2022. Problem-solving keeps me sharp on algorithms, data structures and optimization — directly improving how I design backend systems.
+            {t.sub}
           </p>
         </div>
 
         <div className="cp-layout">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, ease }} className="card cp-big">
-            <div className="cp-big-label">Total problems solved</div>
+            <div className="cp-big-label">{t.total}</div>
             <div className="cp-big-num serif">{competitiveProgramming.totalSolved}</div>
-            <div className="cp-big-note">across all platforms</div>
+            <div className="cp-big-note">{t.acrossAll}</div>
             <div className="cp-mini-grid">
               {[
-                { icon: Trophy, label: "CF rating", value: competitiveProgramming.stats.cfRating },
-                { icon: Flame, label: "Max streak", value: competitiveProgramming.stats.maxStreak, suffix: "d" },
-                { icon: CalendarDays, label: "Active since", value: competitiveProgramming.stats.activeSince },
+                { icon: Trophy, label: t.cfRating, value: competitiveProgramming.stats.cfRating },
+                { icon: Flame, label: t.maxStreak, value: competitiveProgramming.stats.maxStreak, suffix: t.daySuffix },
+                { icon: CalendarDays, label: t.activeSince, value: competitiveProgramming.stats.activeSince },
               ].map(({ icon: Icon, label, value, suffix }) => (
                 <div key={label} className="cp-mini">
                   <Icon size={15} className="cp-mini-icon" />
-                  <div className="cp-mini-val serif"><CountUp target={value} />{suffix || ""}</div>
+                  <div className="cp-mini-val serif"><CountUp target={value} lang={lang} />{suffix || ""}</div>
                   <div className="cp-mini-label">{label}</div>
                 </div>
               ))}
@@ -72,12 +74,12 @@ export default function CPSection() {
                 <div className="cp-platform-right">
                   {p.rating !== "—" && (
                     <div className="cp-platform-stat">
-                      <div className="cp-platform-stat-label">Rating</div>
+                      <div className="cp-platform-stat-label">{t.rating}</div>
                       <div className="cp-platform-stat-val">{p.rating}</div>
                     </div>
                   )}
                   <div className="cp-platform-stat">
-                    <div className="cp-platform-stat-label">Solved</div>
+                    <div className="cp-platform-stat-label">{t.solved}</div>
                     <div className="cp-platform-stat-val cp-solved">{p.solved}</div>
                   </div>
                   <ArrowUpRight size={16} className="cp-arrow" />
@@ -85,7 +87,7 @@ export default function CPSection() {
               </motion.a>
             ))}
             <motion.blockquote initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.5, duration: 0.8 }} className="cp-quote">
-              &ldquo;Competitive programming isn&apos;t just about solving problems — it&apos;s about thinking systematically and writing code that works correctly under constraints.&rdquo;
+              &ldquo;{t.quote}&rdquo;
             </motion.blockquote>
           </div>
         </div>

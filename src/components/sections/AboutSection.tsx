@@ -1,44 +1,35 @@
 "use client";
 import Image from "next/image";
 import { MapPin, GraduationCap, Code2, Mail, ArrowUpRight } from "lucide-react";
-import { personalInfo, education } from "@/data/portfolio";
+import { useData, formatNumber } from "@/data/useData";
+import Rich from "@/components/lang/Rich";
 import AboutAnimations from "@/components/sections/AboutAnimations";
 
 export default function AboutSection() {
+  const { ui, personalInfo, education, lang } = useData();
+  const a = ui.about;
   const facts = [
-    { icon: MapPin, label: "Location", value: personalInfo.location },
-    { icon: GraduationCap, label: "University", value: "CUET, Bangladesh" },
-    { icon: Code2, label: "Focus", value: "Software Engineering · Full-Stack" },
-    { icon: Mail, label: "Email", value: personalInfo.email },
+    { icon: MapPin, label: a.factLocation, value: personalInfo.location },
+    { icon: GraduationCap, label: a.factUniversity, value: a.universityValue },
+    { icon: Code2, label: a.factFocus, value: a.focusValue },
+    { icon: Mail, label: a.factEmail, value: personalInfo.email },
   ];
 
   return (
     <section id="about" className="section">
       <div className="section-container">
         <div className="section-head">
-          <div className="eyebrow"><span className="eyebrow-num">01</span> About</div>
-          <h2 className="section-h2">Who I am &amp; <em>what I do</em></h2>
+          <div className="eyebrow"><span className="eyebrow-num">{formatNumber("01", lang)}</span> {a.eyebrow}</div>
+          <h2 className="section-h2">{a.h2[0]}<em>{a.h2[1]}</em></h2>
         </div>
 
         <div className="about-grid">
           <div>
             <AboutAnimations>
               <div className="about-text">
-                <p className="about-lead">
-                  I&apos;m a <strong>Computer Science student at CUET, Bangladesh</strong>, passionate about software engineering and building reliable, practical solutions to real-world problems.
-                </p>
-                <p>
-                  I enjoy working across the software development lifecycle — from designing systems and architecting backend services to building polished, performant user interfaces. My primary stack includes <strong>Next.js, React, TypeScript, Node.js, PostgreSQL and Prisma</strong>.
-                </p>
-                <p>
-                  I have experience developing and deploying full-stack applications with payment integrations, role-based authentication and database-driven systems for real users. I care about clean, maintainable code and systems that are scalable and easy to evolve.
-                </p>
-                <p>
-                  Alongside engineering, I work on <strong>applied machine learning and deep learning research</strong> in Python. My B.Sc. thesis detects AI-generated Bangla speech by fine-tuning a self-supervised speech model, and my IEEE conference paper (under review) studies how scaffold-aware evaluation exposes generalization gaps in drug solubility prediction.
-                </p>
-                <p>
-                  Beyond individual projects, I&apos;ve collaborated on <strong>university software projects</strong> — from requirements and system design to implementation, testing and deployment — while continuously strengthening my engineering fundamentals.
-                </p>
+                {a.paragraphs.map((text, i) => (
+                  <p key={i} className={i === 0 ? "about-lead" : undefined}><Rich text={text} /></p>
+                ))}
               </div>
             </AboutAnimations>
 
@@ -57,19 +48,19 @@ export default function AboutSection() {
 
           <div className="about-side">
             <div className="about-photo">
-              <Image src={personalInfo.photo} alt={personalInfo.name} fill style={{ objectFit: "cover", objectPosition: "top center" }} sizes="(max-width:900px) 100vw, 45vw" />
+              <Image src={personalInfo.photo} alt="Sabbir Rayhan Mahee" fill style={{ objectFit: "cover", objectPosition: "top center" }} sizes="(max-width:900px) 100vw, 45vw" />
               <div className="about-photo-shade" />
               <div className="about-photo-caption">
                 <div className="about-photo-name">{personalInfo.name}</div>
-                <div className="about-photo-role">Software Engineer · CUET</div>
+                <div className="about-photo-role">{a.photoRole}</div>
               </div>
             </div>
 
             <div className="edu-block">
-              <div className="edu-label">Education</div>
+              <div className="edu-label">{a.education}</div>
               <ol className="edu-list">
                 {education.map((edu) => (
-                  <li key={edu.degree} className="edu-item">
+                  <li key={edu.url} className="edu-item">
                     <span className="edu-dot" />
                     <div className="edu-top">
                       <span className="edu-period mono">{edu.period}</span>

@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Fraunces, JetBrains_Mono } from "next/font/google";
+import { Inter, Fraunces, JetBrains_Mono, Noto_Sans_Bengali, Noto_Serif_Bengali } from "next/font/google";
 import "./globals.css";
 import { personalInfo } from "@/data/portfolio";
 import SmoothScroll from "@/components/layout/SmoothScroll";
 import DynamicBackground from "@/components/layout/DynamicBackground";
 import ThemeController from "@/components/theme/ThemeController";
+import LanguageController from "@/components/lang/LanguageController";
 import { STORAGE_KEY, bootTable } from "@/lib/themeEngine";
 
 const siteUrl = "https://maheeportfolio.vercel.app";
@@ -35,6 +36,9 @@ export const metadata: Metadata = {
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-fraunces", style: ["normal", "italic"], axes: ["opsz"], display: "swap" });
 const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", weight: ["400", "500"], display: "swap" });
+// Bengali glyphs. Only downloaded when a visitor switches to Bangla (preload: false), so English stays fast.
+const notoBn = Noto_Sans_Bengali({ subsets: ["bengali"], variable: "--font-bn-sans", display: "swap", preload: false });
+const notoBnSerif = Noto_Serif_Bengali({ subsets: ["bengali"], variable: "--font-bn-serif", display: "swap", preload: false });
 
 export const viewport: Viewport = { themeColor: "#0d1012" };
 
@@ -52,10 +56,11 @@ const themeBootScript = `(function(){try{var m=localStorage.getItem(${JSON.strin
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${fraunces.variable} ${jetbrains.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${fraunces.variable} ${jetbrains.variable} ${notoBn.variable} ${notoBnSerif.variable}`}>
       <body className="antialiased">
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
         <ThemeController />
+        <LanguageController />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}

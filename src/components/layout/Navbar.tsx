@@ -4,22 +4,26 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowDownToLine } from "lucide-react";
 import { personalInfo } from "@/data/portfolio";
 import ThemeSwitcher from "@/components/theme/ThemeSwitcher";
+import LanguageSwitcher from "@/components/lang/LanguageSwitcher";
+import { useData, formatNumber } from "@/data/useData";
 
 const navLinks = [
-  { label: "About", href: "#about" },
-  { label: "Skills", href: "#skills" },
-  { label: "Experience", href: "#experience" },
-  { label: "Research", href: "#research" },
-  { label: "Projects", href: "#projects" },
-  { label: "CP", href: "#cp" },
-  { label: "Contact", href: "#contact" },
-];
+  { key: "about", href: "#about" },
+  { key: "skills", href: "#skills" },
+  { key: "experience", href: "#experience" },
+  { key: "research", href: "#research" },
+  { key: "projects", href: "#projects" },
+  { key: "cp", href: "#cp" },
+  { key: "contact", href: "#contact" },
+] as const;
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeSection, setActiveSection] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { ui, lang } = useData();
+  const label = (k: (typeof navLinks)[number]["key"]) => ui.nav[k];
 
   useEffect(() => {
     const onScroll = () => {
@@ -57,12 +61,12 @@ export default function Navbar() {
         className={`navbar ${scrolled ? "navbar-scrolled" : ""}`}
       >
         <div className="navbar-inner">
-          <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="nav-logo" aria-label="SR Mahee — back to top">
+          <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="nav-logo" aria-label={ui.brandAria}>
             <span className="nav-logo-mark">SR</span>
             <span className="nav-logo-text">Mahee<span className="nav-logo-dot">.</span></span>
           </button>
 
-          <nav className="nav-links-desktop" aria-label="Primary">
+          <nav className="nav-links-desktop" aria-label={ui.nav.primary}>
             {navLinks.map(link => {
               const isActive = activeSection === link.href.replace("#", "");
               return (
@@ -70,19 +74,20 @@ export default function Navbar() {
                   {isActive && (
                     <motion.span layoutId="nav-active-pill" className="nav-active-pill" transition={{ type: "spring", bounce: 0.18, duration: 0.5 }} />
                   )}
-                  <span style={{ position: "relative", zIndex: 1 }}>{link.label}</span>
+                  <span style={{ position: "relative", zIndex: 1 }}>{label(link.key)}</span>
                 </button>
               );
             })}
           </nav>
 
           <div className="nav-right">
+            <LanguageSwitcher />
             <ThemeSwitcher />
             <a href={personalInfo.resumeUrl} download className="btn btn-ghost btn-sm nav-resume">
               <ArrowDownToLine size={14} />
-              <span>Resume</span>
+              <span>{ui.nav.resume}</span>
             </a>
-            <button onClick={() => setMobileOpen(!mobileOpen)} className="nav-hamburger" aria-label="Toggle menu" aria-expanded={mobileOpen}>
+            <button onClick={() => setMobileOpen(!mobileOpen)} className="nav-hamburger" aria-label={ui.nav.menu} aria-expanded={mobileOpen}>
               {mobileOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
@@ -108,12 +113,12 @@ export default function Navbar() {
                 onClick={() => scrollTo(link.href)}
                 className={`mobile-nav-link ${activeSection === link.href.replace("#", "") ? "mobile-nav-active" : ""}`}
               >
-                <span className="mono mobile-nav-num">0{i + 1}</span>
-                {link.label}
+                <span className="mono mobile-nav-num">{formatNumber(`0${i + 1}`, lang)}</span>
+                {label(link.key)}
               </motion.button>
             ))}
             <a href={personalInfo.resumeUrl} download className="btn btn-primary" style={{ marginTop: 12 }}>
-              <ArrowDownToLine size={15} /> Download Resume
+              <ArrowDownToLine size={15} /> {ui.nav.downloadResume}
             </a>
           </motion.div>
         )}

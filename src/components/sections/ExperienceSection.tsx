@@ -2,11 +2,12 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Check } from "lucide-react";
-import { experience } from "@/data/portfolio";
+import { useData, formatNumber } from "@/data/useData";
 
 const expTones = ["tone-sky", "tone-violet", "tone-sage"];
 
 export default function ExperienceSection() {
+  const { ui, experience, lang } = useData();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
@@ -14,8 +15,8 @@ export default function ExperienceSection() {
     <section id="experience" className="section">
       <div ref={ref} className="section-container">
         <div className="section-head">
-          <div className="eyebrow"><span className="eyebrow-num">03</span> Experience</div>
-          <h2 className="section-h2">Work &amp; <em>experience</em></h2>
+          <div className="eyebrow"><span className="eyebrow-num">{formatNumber("03", lang)}</span> {ui.experience.eyebrow}</div>
+          <h2 className="section-h2">{ui.experience.h2[0]}<em>{ui.experience.h2[1]}</em></h2>
         </div>
 
         <div className="exp-list">

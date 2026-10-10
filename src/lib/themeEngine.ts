@@ -19,11 +19,11 @@ export const DEFAULT_THEME_ID = THEMES[0].id;
 export const THEME_EVENT = "portfolio:themechange";
 
 /** how long each theme stays before auto mode moves on */
-const DWELL_MS = 12600;
+const DWELL_MS = 26000;
 /** length of the colour cross-fade */
 const TWEEN_MS = 2400;
 /** first automatic change after the page loads */
-const FIRST_DELAY_MS = 8000;
+const FIRST_DELAY_MS = 16000;
 /** minimum time between style writes during a fade (~30 fps is plenty for slow colour changes) */
 const FRAME_MS = 33;
 
