@@ -93,12 +93,12 @@ export default function CPSection() {
 
       <style>{`
         .cp-layout { display: grid; grid-template-columns: 1fr 1.1fr; gap: 20px; align-items: stretch; }
-        .cp-big { padding: 40px; position: relative; overflow: hidden; background: radial-gradient(500px 260px at 0% 0%, rgba(140,192,168,0.1), transparent 70%), radial-gradient(420px 240px at 100% 100%, rgba(180,167,224,0.08), transparent 70%), linear-gradient(180deg, var(--surface), rgba(22,27,30,0.6)); }
+        .cp-big { padding: 40px; position: relative; overflow: hidden; background: radial-gradient(500px 260px at 0% 0%, rgb(var(--accent-rgb) / 0.1), transparent 70%), radial-gradient(420px 240px at 100% 100%, rgb(var(--violet-rgb) / 0.08), transparent 70%), linear-gradient(180deg, var(--surface), rgb(var(--surface-rgb) / 0.6)); }
         .cp-big-label { font-size: 13px; color: var(--muted); }
         .cp-big-num { font-size: clamp(72px, 10vw, 120px); font-weight: 300; line-height: 1; color: var(--text); letter-spacing: -0.04em; margin: 10px 0 4px; }
         .cp-big-note { font-size: 14px; color: var(--accent); margin-bottom: 36px; }
         .cp-mini-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .cp-mini { padding: 16px; border-radius: var(--radius-sm); background: rgba(13,16,18,0.55); border: 1px solid var(--line); }
+        .cp-mini { padding: 16px; border-radius: var(--radius-sm); background: rgb(var(--bg-rgb) / 0.55); border: 1px solid var(--line); }
         .cp-mini-icon { color: var(--sand); margin-bottom: 10px; }
         .cp-mini-val { font-size: 26px; color: var(--text); line-height: 1.1; }
         .cp-mini-label { font-size: 12px; color: var(--subtle); margin-top: 4px; }

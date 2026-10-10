@@ -109,7 +109,7 @@ export default function AboutSection() {
 
         .about-side { display: flex; flex-direction: column; gap: 36px; }
         .about-photo { position: relative; aspect-ratio: 4 / 4.3; border-radius: 24px; overflow: hidden; border: 1px solid var(--line); }
-        .about-photo-shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,16,18,0.85), rgba(13,16,18,0.05) 50%); }
+        .about-photo-shade { position: absolute; inset: 0; background: linear-gradient(to top, rgb(var(--bg-rgb) / 0.85), rgb(var(--bg-rgb) / 0.05) 50%); }
         .about-photo-caption { position: absolute; left: 22px; right: 22px; bottom: 20px; }
         .about-photo-name { font-family: var(--font-serif); font-size: 22px; color: var(--text); }
         .about-photo-role { font-size: 13px; color: var(--accent-strong); }

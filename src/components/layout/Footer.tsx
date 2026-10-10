@@ -71,13 +71,13 @@ export default function Footer() {
 
       <style>{`
         .footer { position: relative; border-top: 1px solid var(--line); overflow: hidden; }
-        .footer::before { content: ""; position: absolute; top: -200px; left: 50%; transform: translateX(-50%); width: 900px; height: 400px; border-radius: 50%; background: rgba(140,192,168,0.06); filter: blur(90px); pointer-events: none; }
+        .footer::before { content: ""; position: absolute; top: -200px; left: 50%; transform: translateX(-50%); width: 900px; height: 400px; border-radius: 50%; background: rgb(var(--accent-rgb) / 0.06); filter: blur(90px); pointer-events: none; }
         .footer-cta { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding: 72px 0 56px; border-bottom: 1px solid var(--line); }
         .footer-cta-title { font-family: var(--font-serif); font-size: clamp(30px, 4vw, 46px); font-weight: 350; letter-spacing: -0.02em; color: var(--text); margin: 0; }
         .footer-cta-title em { font-style: italic; padding-right: 0.06em; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
         .footer-grid { position: relative; display: grid; grid-template-columns: 1.6fr 1fr 1fr 1.3fr; gap: 48px; padding: 56px 0 48px; }
         .footer-logo { display: flex; align-items: center; gap: 11px; margin-bottom: 18px; font-family: var(--font-serif); font-size: 21px; color: var(--text); }
-        .footer-mark { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: var(--font-sans); font-size: 13.5px; font-weight: 700; letter-spacing: 0.02em; color: #0d1714; background: var(--grad); box-shadow: inset 0 1px 0 rgba(255,255,255,0.35); }
+        .footer-mark { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: var(--font-sans); font-size: 13.5px; font-weight: 700; letter-spacing: 0.02em; color: rgb(var(--on-accent-rgb)); background: var(--grad); box-shadow: inset 0 1px 0 rgba(255,255,255,0.35); }
         .footer-bio { color: var(--muted); font-size: 14.5px; line-height: 1.75; margin: 0 0 22px; max-width: 320px; }
         .footer-socials { display: flex; gap: 8px; }
         .footer-col-label { font-size: 12px; font-family: var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--subtle); margin-bottom: 18px; }

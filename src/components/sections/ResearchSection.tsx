@@ -124,10 +124,10 @@ export default function ResearchSection() {
           background: linear-gradient(90deg, transparent, rgb(var(--tone) / 0.6), transparent);
         }
         .rs-card:hover { border-color: rgb(var(--tone) / 0.32); }
-        .rs-card { background: radial-gradient(600px 260px at 100% 0%, rgb(var(--tone) / 0.07), transparent 70%), linear-gradient(180deg, var(--surface), rgba(22,27,30,0.6)); }
+        .rs-card { background: radial-gradient(600px 260px at 100% 0%, rgb(var(--tone) / 0.07), transparent 70%), linear-gradient(180deg, var(--surface), rgb(var(--surface-rgb) / 0.6)); }
         .rs-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
         .rs-icon { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; color: rgb(var(--tone)); background: rgb(var(--tone) / 0.1); border: 1px solid rgb(var(--tone) / 0.3); }
-        .rs-badge { font-size: 12px; padding: 4px 11px; border-radius: 999px; color: var(--sand); background: var(--sand-soft); border: 1px solid rgba(217,188,140,0.25); }
+        .rs-badge { font-size: 12px; padding: 4px 11px; border-radius: 999px; color: var(--sand); background: var(--sand-soft); border: 1px solid rgb(var(--sand-rgb) / 0.25); }
         .rs-status { font-size: 11.5px; color: var(--muted); letter-spacing: 0.04em; }
         .rs-title { font-family: var(--font-serif); font-size: clamp(24px, 2.6vw, 32px); font-weight: 400; line-height: 1.2; letter-spacing: -0.015em; color: var(--text); margin: 0 0 10px; }
         .rs-paper { font-family: var(--font-serif); font-style: italic; font-size: 15px; color: rgb(var(--tone)); line-height: 1.55; margin: 0 0 16px; }
@@ -141,15 +141,15 @@ export default function ResearchSection() {
         .rs-side { display: flex; flex-direction: column; gap: 16px; }
         .rs-visual { height: 150px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: radial-gradient(120% 90% at 50% 0%, rgb(var(--tone) / 0.1), transparent 70%), rgba(255,255,255,0.012); display: grid; place-items: center; overflow: hidden; }
         .rs-wave { display: flex; align-items: center; gap: 4px; height: 70%; width: 82%; }
-        .rs-wave span { flex: 1; border-radius: 3px; background: linear-gradient(180deg, #c3b8ea, rgba(143,184,222,0.3)); transform-origin: center; animation: rsWave 1.6s ease-in-out infinite; opacity: 0.85; }
-        .rs-wave span:nth-child(3n) { background: linear-gradient(180deg, #dea6aa, rgba(222,166,170,0.2)); }
-        .rs-wave span:nth-child(4n) { background: linear-gradient(180deg, #8fb8de, rgba(143,184,222,0.2)); }
+        .rs-wave span { flex: 1; border-radius: 3px; background: linear-gradient(180deg, rgb(var(--violet-rgb)), rgb(var(--sky-rgb) / 0.3)); transform-origin: center; animation: rsWave 1.6s ease-in-out infinite; opacity: 0.85; }
+        .rs-wave span:nth-child(3n) { background: linear-gradient(180deg, rgb(var(--rose-rgb)), rgb(var(--rose-rgb) / 0.2)); }
+        .rs-wave span:nth-child(4n) { background: linear-gradient(180deg, rgb(var(--sky-rgb)), rgb(var(--sky-rgb) / 0.2)); }
         @keyframes rsWave { 0%, 100% { transform: scaleY(0.35); } 50% { transform: scaleY(1); } }
         .rs-mol { width: 82%; height: 88%; }
         .rs-mol polygon, .rs-mol line { fill: none; stroke: rgb(var(--tone) / 0.6); stroke-width: 1.2; }
         .rs-mol circle { fill: rgb(var(--tone)); animation: rsPulse 2.8s ease-in-out infinite; }
         .rs-mol .rs-mol-o { fill: var(--sand); }
-        .rs-mol .rs-mol-n { fill: #9db7d6; }
+        .rs-mol .rs-mol-n { fill: rgb(var(--sky-rgb)); }
         @keyframes rsPulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
 
         .rs-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; }

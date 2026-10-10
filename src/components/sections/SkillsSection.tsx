@@ -66,7 +66,7 @@ export default function SkillsSection() {
         .skill-card-wide { grid-column: span 2; }
         .skill-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
         .skill-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(var(--tone)); background: rgb(var(--tone) / 0.1); border: 1px solid rgb(var(--tone) / 0.28); }
-        .skill-card { background: radial-gradient(420px 180px at 0% 0%, rgb(var(--tone) / 0.07), transparent 70%), linear-gradient(180deg, var(--surface), rgba(22,27,30,0.6)); }
+        .skill-card { background: radial-gradient(420px 180px at 0% 0%, rgb(var(--tone) / 0.07), transparent 70%), linear-gradient(180deg, var(--surface), rgb(var(--surface-rgb) / 0.6)); }
         .skill-count { font-size: 12px; color: var(--subtle); }
         .skill-cat { font-family: var(--font-serif); font-size: 22px; font-weight: 400; color: var(--text); margin: 0 0 18px; letter-spacing: -0.01em; }
         .skill-chips { display: flex; flex-wrap: wrap; gap: 8px; }

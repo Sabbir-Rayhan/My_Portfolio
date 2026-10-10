@@ -58,7 +58,7 @@ export default function ExperienceSection() {
         .exp-row { display: grid; grid-template-columns: 220px 1fr; gap: 40px; align-items: start; }
         .exp-meta { position: sticky; top: 96px; padding-top: 30px; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
         .exp-period { font-size: 13px; color: var(--text-soft); }
-        .exp-type { font-size: 12px; padding: 4px 12px; border-radius: 999px; color: var(--sand); background: var(--sand-soft); border: 1px solid rgba(217,188,140,0.22); }
+        .exp-type { font-size: 12px; padding: 4px 12px; border-radius: 999px; color: var(--sand); background: var(--sand-soft); border: 1px solid rgb(var(--sand-rgb) / 0.22); }
 
         .exp-card { padding: 32px 36px; position: relative; overflow: hidden; }
         .exp-card::before { content: ""; position: absolute; left: 0; top: 28px; bottom: 28px; width: 2px; border-radius: 2px; background: linear-gradient(180deg, rgb(var(--tone) / 0.8), rgb(var(--tone) / 0)); }

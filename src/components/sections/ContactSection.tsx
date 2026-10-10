@@ -144,12 +144,12 @@ export default function ContactSection() {
         .form-label { font-size: 13px; color: var(--text-soft); font-weight: 500; }
         .form-input {
           padding: 14px 16px; border-radius: var(--radius-sm); width: 100%;
-          background: rgba(13,16,18,0.6); border: 1px solid var(--line-strong);
+          background: rgb(var(--bg-rgb) / 0.6); border: 1px solid var(--line-strong);
           color: var(--text); font-size: 15px; font-family: var(--font-sans); outline: none;
           transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
         }
         .form-input::placeholder { color: var(--subtle); }
-        .form-input:focus { border-color: var(--accent-line); box-shadow: 0 0 0 4px rgba(140,192,168,0.1); background: rgba(13,16,18,0.85); }
+        .form-input:focus { border-color: var(--accent-line); box-shadow: 0 0 0 4px rgb(var(--accent-rgb) / 0.12); background: rgb(var(--bg-rgb) / 0.85); }
         .form-textarea { resize: vertical; min-height: 150px; line-height: 1.6; }
         .form-submit { align-self: flex-start; flex-shrink: 0; }
         .form-foot { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
@@ -160,7 +160,7 @@ export default function ContactSection() {
         .form-err svg { display: inline-block; vertical-align: -2px; margin-right: 6px; }
         .form-err a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
         .form-honey { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-        .spinner { width: 14px; height: 14px; border: 2px solid rgba(13,23,20,0.3); border-top-color: #0d1714; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .spinner { width: 14px; height: 14px; border: 2px solid rgb(var(--on-accent-rgb) / 0.3); border-top-color: rgb(var(--on-accent-rgb)); border-radius: 50%; animation: spin 0.8s linear infinite; }
 
         .contact-info { display: flex; flex-direction: column; gap: 12px; }
         .contact-email { padding: 22px; display: flex; flex-direction: column; gap: 18px; }
