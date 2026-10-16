@@ -6,6 +6,7 @@ import SmoothScroll from "@/components/layout/SmoothScroll";
 import DynamicBackground from "@/components/layout/DynamicBackground";
 import ThemeController from "@/components/theme/ThemeController";
 import LanguageController from "@/components/lang/LanguageController";
+import FaqChat from "@/components/chat/FaqChat";
 import { STORAGE_KEY, bootTable } from "@/lib/themeEngine";
 
 const siteUrl = "https://maheeportfolio.vercel.app";
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="page-glow" aria-hidden />
         <DynamicBackground />
         <SmoothScroll>{children}</SmoothScroll>
+        <FaqChat />
       </body>
     </html>
   );
