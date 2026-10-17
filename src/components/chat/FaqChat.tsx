@@ -10,13 +10,14 @@ import Rich from "@/components/lang/Rich";
 type Msg = {
   id: number;
   role: "user" | "bot";
-  kind: "welcome" | "greet" | "faq" | "fallback" | "text";
+  kind: "welcome" | "greet" | "faq" | "fallback" | "text" | "ai" | "aiBusy";
   faqId?: string;
   text?: string;
 };
 
 const WELCOME: Msg = { id: 0, role: "bot", kind: "welcome" };
 const TYPING_MS = 650;
+const AI_TIMEOUT_MS = 25000;
 
 export default function FaqChat() {
   const { lang, ui } = useData();
@@ -31,6 +32,9 @@ export default function FaqChat() {
   const inputRef = useRef<HTMLInputElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
   const reduced = useRef(false);
+  const gen = useRef(0); // bumped by reset so in-flight AI answers are ignored
+  const msgsRef = useRef<Msg[]>([WELCOME]);
+  msgsRef.current = msgs;
 
   useEffect(() => {
     reduced.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -55,24 +59,63 @@ export default function FaqChat() {
     return () => { document.removeEventListener("keydown", onKey); clearTimeout(f); };
   }, [open]);
 
+  const history = () => {
+    const out: { role: "user" | "bot"; text: string }[] = [];
+    for (const m of msgsRef.current) {
+      if (m.role === "user") {
+        const q = m.kind === "faq" ? FAQ.find(f => f.id === m.faqId)?.q[lang] : m.text;
+        if (q) out.push({ role: "user", text: q });
+      } else if (m.kind === "faq") {
+        const a = FAQ.find(f => f.id === m.faqId)?.a[lang];
+        if (a) out.push({ role: "bot", text: a.replace("{email}", personalInfo.email).replace(/\*\*/g, "") });
+      } else if (m.kind === "ai" && m.text) out.push({ role: "bot", text: m.text });
+    }
+    return out.slice(-6);
+  };
+
+  const askAi = useCallback(async (text: string, myGen: number) => {
+    const ctrl = new AbortController();
+    const to = window.setTimeout(() => ctrl.abort(), AI_TIMEOUT_MS);
+    let reply: Omit<Msg, "id"> = { role: "bot", kind: "fallback" };
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text, history: history().slice(0, -1), lang }),
+        signal: ctrl.signal,
+      });
+      if (res.ok) {
+        const data = (await res.json()) as { reply?: string };
+        if (data.reply) reply = { role: "bot", kind: "ai", text: data.reply };
+      } else if (res.status === 429) reply = { role: "bot", kind: "aiBusy" };
+    } catch { /* network error or timeout → normal fallback */ }
+    clearTimeout(to);
+    if (myGen !== gen.current) return;
+    setMsgs(m => [...m, { ...reply, id: idRef.current++ }]);
+    setTyping(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang]);
+
   const ask = useCallback((text: string, faqId?: string) => {
     if (typing) return;
     const userMsg: Msg = { id: idRef.current++, role: "user", kind: faqId ? "faq" : "text", faqId, text: faqId ? undefined : text };
-    let reply: Omit<Msg, "id">;
+    let reply: Omit<Msg, "id"> | null;
     if (faqId) reply = { role: "bot", kind: "faq", faqId };
     else if (isGreeting(text)) reply = { role: "bot", kind: "greet" };
     else {
       const hit = matchFaq(text);
-      reply = hit ? { role: "bot", kind: "faq", faqId: hit } : { role: "bot", kind: "fallback" };
+      reply = hit ? { role: "bot", kind: "faq", faqId: hit } : null;
     }
     setMsgs(m => [...m, userMsg]);
     setTyping(true);
+    if (!reply) { void askAi(text, gen.current); return; }
+    const r = reply;
     const id = window.setTimeout(() => {
-      setMsgs(m => [...m, { ...reply, id: idRef.current++ }]);
+      setMsgs(m => [...m, { ...r, id: idRef.current++ }]);
       setTyping(false);
     }, reduced.current ? 0 : TYPING_MS);
     timers.current.push(id);
-  }, [typing]);
+  }, [typing, askAi]);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,6 +129,7 @@ export default function FaqChat() {
     timers.current.forEach(clearTimeout);
     timers.current = [];
     idRef.current = 1;
+    gen.current++;
     setTyping(false);
     setMsgs([WELCOME]);
     setDraft("");
@@ -113,6 +157,22 @@ export default function FaqChat() {
   const renderBot = (m: Msg) => {
     if (m.kind === "welcome") return <Rich text={t.welcome} />;
     if (m.kind === "greet") return <Rich text={t.greet} />;
+    if (m.kind === "ai") {
+      return (
+        <>
+          <span className="chat-ai-tag">{t.aiLabel}</span>
+          <span className="chat-ai-text"><Rich text={m.text ?? ""} /></span>
+        </>
+      );
+    }
+    if (m.kind === "aiBusy") {
+      return (
+        <>
+          <Rich text={t.aiBusy} />
+          <div className="chat-acts">{renderAction({ kind: "email" }, 0)}</div>
+        </>
+      );
+    }
     if (m.kind === "fallback") {
       return (
         <>
@@ -276,6 +336,8 @@ export default function FaqChat() {
         .chat-row-bot .chat-bubble strong { color: var(--text); font-weight: 600; }
         .chat-row-user .chat-bubble { background: var(--grad); color: rgb(var(--on-accent-rgb)); font-weight: 500; border-bottom-right-radius: 6px; }
 
+        .chat-ai-tag { display: inline-block; margin-bottom: 6px; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--accent-line); background: var(--accent-soft); color: var(--accent-strong); font-size: 11px; font-weight: 600; line-height: 1.5; }
+        .chat-ai-text { display: block; white-space: pre-wrap; }
         .chat-acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
         .chat-act {
           display: inline-flex; align-items: center; gap: 6px; padding: 7px 13px; border-radius: 999px;

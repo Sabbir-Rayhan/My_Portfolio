@@ -80,7 +80,7 @@ export const FAQ: FaqItem[] = [
       en: "I'm a B.Sc. student in Computer Science and Engineering at **CUET** (CGPA **3.28 / 4.00**). Before that I completed HSC in Science at Noapara Govt. College with **GPA 5.00 / 5.00**.",
       bn: "আমি **চুয়েটে** কম্পিউটার সায়েন্স অ্যান্ড ইঞ্জিনিয়ারিংয়ে বি.এসসি. করছি (সিজিপিএ **৩.২৮ / ৪.০০**)। এর আগে নোয়াপাড়া সরকারি কলেজ থেকে বিজ্ঞান বিভাগে এইচএসসি সম্পন্ন করেছি, জিপিএ **৫.০০ / ৫.০০**।",
     },
-    keywords: ["education", "study", "studied", "studying", "university", "cuet", "cgpa", "gpa", "degree", "college", "school", "শিক্ষা", "পড়", "বিশ্ববিদ্যালয়", "চুয়েট", "সিজিপিএ", "জিপিএ", "ডিগ্রি", "কলেজ"],
+    keywords: ["education", "study", "studied", "studying", "university", "cuet", "cgpa", "gpa", "cg", "grade", "grades", "degree", "college", "school", "শিক্ষা", "পড়", "বিশ্ববিদ্যালয়", "চুয়েট", "সিজিপিএ", "জিপিএ", "ডিগ্রি", "কলেজ"],
     actions: [{ kind: "scroll", id: "about" }],
   },
   {
@@ -140,6 +140,7 @@ export interface ChatUi {
   welcome: string; greet: string; fallback: string; placeholder: string; send: string;
   suggested: string; note: string; emailMe: string; contactForm: string; downloadResume: string;
   typing: string; goTo: (section: string) => string;
+  aiLabel: string; aiBusy: string;
 }
 
 export const chatUi: Record<Lang, ChatUi> = {
@@ -149,9 +150,11 @@ export const chatUi: Record<Lang, ChatUi> = {
     greet: "Hello! What would you like to know — my projects, skills, research or availability?",
     fallback: "I don't have an answer for that yet. I can answer questions about my background, skills, projects, research and availability — or you can email me directly.",
     placeholder: "Ask about my work, skills, availability…", send: "Send",
-    suggested: "Suggested questions", note: "Automated answers written from this portfolio — not an AI.",
+    suggested: "Suggested questions", note: "Common questions are answered from my portfolio data. Other questions are answered by AI and may contain mistakes.",
     emailMe: "Email me", contactForm: "Open contact form", downloadResume: "Download résumé", typing: "Typing…",
     goTo: s => `Go to ${s}`,
+    aiLabel: "AI-generated answer",
+    aiBusy: "The AI assistant is busy right now (free usage limit). Please try again a little later, or email me directly.",
   },
   bn: {
     title: "মাহীকে জিজ্ঞাসা করুন", sub: "আমার কাজ নিয়ে দ্রুত উত্তর", launcher: "প্রশ্ন করুন", open: "চ্যাট খুলুন", close: "চ্যাট বন্ধ করুন", reset: "নতুন করে শুরু",
@@ -159,9 +162,11 @@ export const chatUi: Record<Lang, ChatUi> = {
     greet: "হ্যালো! আপনি কী জানতে চান — আমার প্রজেক্ট, দক্ষতা, গবেষণা নাকি কাজের প্রাপ্যতা?",
     fallback: "এই প্রশ্নের উত্তর আমার কাছে এখনও নেই। আমি আমার পটভূমি, দক্ষতা, প্রজেক্ট, গবেষণা ও কাজের প্রাপ্যতা নিয়ে প্রশ্নের উত্তর দিতে পারি — অথবা সরাসরি ইমেইল করতে পারেন।",
     placeholder: "আমার কাজ, দক্ষতা, প্রাপ্যতা নিয়ে জিজ্ঞাসা করুন…", send: "পাঠান",
-    suggested: "প্রস্তাবিত প্রশ্ন", note: "এই পোর্টফোলিওর তথ্য থেকে লেখা স্বয়ংক্রিয় উত্তর — এআই নয়।",
+    suggested: "প্রস্তাবিত প্রশ্ন", note: "সাধারণ প্রশ্নের উত্তর আমার পোর্টফোলিওর তথ্য থেকে দেওয়া হয়। অন্য প্রশ্নের উত্তর এআই দেয় এবং তাতে ভুল থাকতে পারে।",
     emailMe: "ইমেইল করুন", contactForm: "কন্টাক্ট ফর্ম খুলুন", downloadResume: "রেজ্যুমে ডাউনলোড", typing: "লিখছে…",
     goTo: s => `${s} অংশে যান`,
+    aiLabel: "এআই-তৈরি উত্তর",
+    aiBusy: "এআই সহকারী এখন ব্যস্ত (বিনামূল্যের ব্যবহারসীমা)। একটু পরে আবার চেষ্টা করুন, অথবা সরাসরি ইমেইল করুন।",
   },
 };
 
