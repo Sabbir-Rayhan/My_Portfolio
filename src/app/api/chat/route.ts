@@ -4,7 +4,7 @@
  *
  * Environment variables (set in Vercel → Project → Settings → Environment Variables):
  *   GEMINI_API_KEYS   one key, or several separated by commas (used in rotation, with failover)
- *   GEMINI_MODEL      optional, default "gemini-flash-latest"
+ *   GEMINI_MODEL      optional; one model or several separated by commas (tried in order). Default "gemini-3.8-flash,gemini-3.5-flash-lite"
  *   AI_RATE_PER_IP    optional, requests per visitor per 10 minutes (default 8)
  *   AI_DAILY_CAP      optional, total AI answers per day per server instance (default 400)
  *
@@ -22,13 +22,12 @@ const num = (v: string | undefined, d: number) => {
   return Number.isFinite(n) && n > 0 ? n : d;
 };
 
-const MODEL = process.env.GEMINI_MODEL || "gemini-flash-latest";
 const BASE = (process.env.GEMINI_API_BASE || "https://generativelanguage.googleapis.com").replace(/\/$/, "");
 const PER_IP = num(process.env.AI_RATE_PER_IP, 8);
 const DAILY_CAP = num(process.env.AI_DAILY_CAP, 400);
 const WINDOW_MS = 10 * 60 * 1000;
 const ATTEMPT_TIMEOUT_MS = 8000; // Gemini can take a few seconds; with one key this is the whole budget
-const MAX_ATTEMPTS = 2;
+const MAX_ATTEMPTS = 3; // 3 × 8 s stays inside maxDuration (30 s)
 
 const MAX_MESSAGE = 300;
 const MAX_HISTORY = 6;
@@ -113,22 +112,32 @@ function loadKeys(): string[] {
 }
 
 let rotation = 0;
-const cooldown = new Map<string, number>(); // key → time until it may be tried again
+const cooldown = new Map<string, number>(); // "key|model" → time until it may be tried again
 
 type GeminiResult = { ok: true; text: string } | { ok: false; reason: "quota" | "error" | "blocked" };
 
 interface GeminiBody { contents: { role: "user" | "model"; parts: { text: string }[] }[] }
 
+/** One or more model names, comma-separated. The first is preferred; the rest are tried if it is busy or slow. */
+const MODELS = (process.env.GEMINI_MODEL || "gemini-3.8-flash,gemini-3.5-flash-lite")
+  .split(/[\s,]+/).filter(Boolean);
+
 async function callGemini(keys: string[], body: GeminiBody): Promise<GeminiResult> {
   const now = Date.now();
   const start = rotation++ % keys.length;
-  const order = keys.map((_, i) => keys[(start + i) % keys.length]).filter(k => (cooldown.get(k) ?? 0) <= now);
-  if (order.length === 0) return { ok: false, reason: "quota" };
+  const orderedKeys = keys.map((_, i) => keys[(start + i) % keys.length]);
+  // attempts: every model on the first key, then every model on the next key, …
+  const plan: { key: string; model: string }[] = [];
+  for (const key of orderedKeys) for (const model of MODELS) {
+    if ((cooldown.get(`${key}|${model}`) ?? 0) <= now) plan.push({ key, model });
+  }
+  if (plan.length === 0) return { ok: false, reason: "quota" };
 
   let sawQuota = false;
-  for (const key of order.slice(0, MAX_ATTEMPTS)) {
+  for (const { key, model } of plan.slice(0, MAX_ATTEMPTS)) {
+    const id = `${key}|${model}`;
     try {
-      const res = await fetch(`${BASE}/v1beta/models/${encodeURIComponent(MODEL)}:generateContent`, {
+      const res = await fetch(`${BASE}/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-goog-api-key": key },
         body: JSON.stringify({
@@ -140,14 +149,14 @@ async function callGemini(keys: string[], body: GeminiBody): Promise<GeminiResul
         cache: "no-store",
       });
 
-      if (res.status === 429) { cooldown.set(key, Date.now() + 60_000); sawQuota = true; continue; }
+      if (res.status === 429) { cooldown.set(id, Date.now() + 60_000); sawQuota = true; continue; }
       if (res.status === 400 || res.status === 401 || res.status === 403 || res.status === 404) {
-        // bad key, wrong model name, or key not allowed: don't hammer it
-        console.error(`[chat] Gemini returned ${res.status} for a key (check GEMINI_API_KEYS / GEMINI_MODEL)`);
-        cooldown.set(key, Date.now() + 10 * 60_000);
+        // bad key or wrong model name: don't hammer it
+        console.error(`[chat] Gemini returned ${res.status} for model ${model} (check GEMINI_API_KEYS / GEMINI_MODEL)`);
+        cooldown.set(id, Date.now() + 10 * 60_000);
         continue;
       }
-      if (!res.ok) { console.error(`[chat] Gemini returned ${res.status}`); continue; }
+      if (!res.ok) { console.error(`[chat] Gemini returned ${res.status} for model ${model}`); cooldown.set(id, Date.now() + 20_000); continue; }
 
       const data = (await res.json()) as { candidates?: { finishReason?: string; content?: { parts?: { text?: string }[] } }[]; promptFeedback?: { blockReason?: string } };
       const text = (data.candidates?.[0]?.content?.parts ?? []).map(p => p.text ?? "").join("").trim();
@@ -157,8 +166,9 @@ async function callGemini(keys: string[], body: GeminiBody): Promise<GeminiResul
       }
       return { ok: true, text };
     } catch (err) {
-      // timeout or network error → try the next key
-      console.error(`[chat] Gemini request failed: ${err instanceof Error ? err.name : "error"}`);
+      // timeout or network error → try the next model / key
+      console.error(`[chat] Gemini request failed on ${model}: ${err instanceof Error ? err.name : "error"}`);
+      cooldown.set(id, Date.now() + 20_000);
     }
   }
   return { ok: false, reason: sawQuota ? "quota" : "error" };

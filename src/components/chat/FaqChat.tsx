@@ -17,7 +17,7 @@ type Msg = {
 
 const WELCOME: Msg = { id: 0, role: "bot", kind: "welcome" };
 const TYPING_MS = 650;
-const AI_TIMEOUT_MS = 25000;
+const AI_TIMEOUT_MS = 29000;
 
 export default function FaqChat() {
   const { lang, ui } = useData();
